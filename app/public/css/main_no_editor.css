@@ -1,0 +1,29 @@
+@media (max-width: 960px) {
+    .carousel {
+        max-height: 162px;
+        overflow: hidden;
+    }
+
+    .container>table>tbody,
+    .container>table>tbody>tr>td>img {
+        width: 100%;
+    }
+
+    .container>table,
+    .container>table>tbody,
+    .container>table>tbody>tr,
+    .container>table>tbody>tr>td {
+        height: 100% !important;
+    }
+
+    .container>table,
+    .container>table>tbody>tr,
+    .container>table>tbody>tr>th,
+    .container>table>tbody>tr>td {
+        display: block;
+    }
+
+    .container>table>colgroup>col {
+        width: 100% !important;
+    }
+}

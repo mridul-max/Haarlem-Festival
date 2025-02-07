@@ -1,0 +1,213 @@
+.brick {
+    width: 100px;
+    height: 100px;
+    background: #f2f2f2;
+}
+
+.brick>img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.tile-picker {
+    position: relative;
+    cursor: pointer;
+    background-color: #eaeaea;
+    background-position: center center;
+    background-size: cover;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, .1);
+    outline: 2px solid #fff;
+    outline-offset: -3px;
+    border: 1px solid #bbb;
+}
+
+.active.tile-picker {
+    border-color: #aaa;
+}
+
+.tile-picker input[type=checkbox] {
+    opacity: 0;
+    position: absolute;
+    left: -80px;
+}
+
+.tile-checked {
+    display: block;
+    font-style: normal;
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    top: -2px;
+    right: -4px;
+}
+
+.tile-checked:after {
+    content: '\2713';
+    display: block;
+    line-height: 18px;
+    width: 18px;
+    height: 18px;
+
+    background-color: #1481b8;
+    color: #fff;
+    border-radius: 2px;
+    font-size: 13px;
+    text-align: center;
+    font-weight: bold;
+
+    opacity: 0;
+    transition: opacity .34s ease-in-out;
+}
+
+
+input[type=checkbox]:checked~.tile-checked:after {
+    opacity: 1;
+}
+
+.disabled-module {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.disabled-module>* {
+    pointer-events: none;
+}
+
+#mapContainer {
+    width: 100%;
+    height: 674px;
+    /* set image as background */
+    background-image: url('../img/jpg/editor/dummymap.jpg');
+    background-size: cover;
+}
+
+/* Over the mapContainer, display text saying "EXAMPLE MAP" using ::after */
+#mapContainer::after {
+    content: "EXAMPLE MAP";
+    position: relative;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    text-align: center;
+    line-height: 200px;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+#calendar {
+    width: 100%;
+    height: 650px;
+    background-image: url('../img/jpg/editor/dummycalendar.jpg');
+    background-size: cover;
+}
+
+#calendar::after {
+    content: "EXAMPLE CALENDAR";
+    position: relative;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    text-align: center;
+    line-height: 200px;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+#countdown {
+    display: inline-block;
+    width: 100%;
+    text-align: center;
+    color: red;
+}
+
+#allday-pass {
+    width: 100%;
+    height: 650px;
+    background-image: url('../img/jpg/editor/allaccesspass.jpg');
+    background-size: cover;
+}
+
+#allday-pass::after {
+    content: "EXAMPLE ALL DAY PASS";
+    display: block;
+    position: relative;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    text-align: center;
+    line-height: 200px;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+#events {
+    width: 100%;
+    height: 650px;
+    background-image: url('../img/jpg/editor/dummyevents.jpg');
+    background-size: cover;
+}
+
+#events::after {
+    content: "EXAMPLE EVENTS";
+    display: block;
+    position: relative;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    text-align: center;
+    line-height: 200px;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+h1,
+h2 {
+    font-size: 2rem;
+}
+
+h1 {
+    text-shadow: none;
+}
+
+#locations>option {
+    font-family: monospace;
+    font-size: 12px;
+}
+
+body.dragging,
+body.dragging * {
+    cursor: move !important;
+}
+
+.dragged {
+    position: absolute;
+    opacity: 0.5;
+    z-index: 2000;
+}
+
+ol.example li.placeholder {
+    position: relative;
+    /** More li styles **/
+}
+
+ol.example li.placeholder:before {
+    position: absolute;
+    /** Define arrowhead **/
+}
+
+#navs>.list-group-item {
+    border-top-width: 1px;
+}

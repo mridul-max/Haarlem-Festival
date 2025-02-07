@@ -1,0 +1,360 @@
+@import url('https://fonts.googleapis.com/css2?family=Abril+Fatface&family=IM+Fell+French+Canon&family=Open+Sans:wght@400;700&family=Rasa:wght@400;700&display=swap');
+
+.buttonleft {
+    align-items: left;
+}
+
+div {
+    margin: auto;
+}
+
+.container {
+    min-height: 80vh;
+    margin-top: 4em;
+}
+
+.container,
+p {
+    font-family: 'Open Sans', sans-serif;
+}
+
+.home {
+    background-color: orange;
+}
+
+.active {
+    text-decoration: underline;
+}
+
+.nav-item {
+    /* Add padding to the left and right of nav-item */
+    padding: 0 30px;
+    max-height: 3rem;
+    font-size: 28px;
+    color: #fff;
+}
+
+.nav-item,
+.nav-item>a {
+    font-family: 'IM Fell French Canon', serif;
+}
+
+h1 {
+    font-family: 'Abril Fatface', cursive;
+    font-size: 6em;
+    text-shadow: 4px 4px 0px #011E31;
+}
+
+h2,
+h3,
+h4,
+h5,
+.btn,
+.list-group-item {
+    font-family: 'Rasa', serif;
+}
+
+.btn {
+    font-size: 1.5rem;
+}
+
+h2 {
+    font-size: 3em;
+}
+
+.nav-item {
+    /* add ... to nav-item if it's too long */
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.nav-item>a {
+    /* Remove underline from nav-item */
+    color: #fff;
+}
+
+.nav-item:not(:last-child) {
+    /* Add separator to the right of nav-item */
+    border-right: 1px solid #525252;
+}
+
+.nav-item:not(:first-child) {
+    border-left: 1px solid #525252;
+}
+
+.navbar {
+    z-index: 1000;
+    position: fixed;
+    width: 100%;
+    top: 0;
+}
+
+#admin-nav {
+    margin-top: 4em
+}
+
+.navbar-brand {
+    max-height: 3rem;
+    margin-left: 1em;
+    margin-right: 1em;
+}
+
+.dropdown-menu {
+    border-radius: 0;
+    border: 1px solid #525252;
+    text-align: center;
+    transform: translateX(-25%) translateY(-4px);
+    z-index: 10000;
+}
+
+.dropdown-menu>a {
+    font-size: 28px;
+}
+
+.dropdown-menu>a:not(:last-child) {
+    border-bottom: 3px solid #525252;
+}
+
+.navbar.navbar-dark>div>ul>.dropdown>.dropdown-menu {
+    color: #fff;
+    background-color: #333333;
+}
+
+.navbar.navbar-dark>div>ul>.dropdown>.dropdown-menu>a {
+    color: #fff;
+    border-color: #fff;
+}
+
+.navbar.navbar-dark>div>ul>.dropdown>.dropdown-menu>a:hover {
+    background-color: #525252;
+}
+
+.foot {
+    background-color: #333333;
+    color: #fff;
+    padding: 1rem;
+    text-align: center;
+    width: 100%;
+    margin: 0;
+}
+
+.social-link {
+    text-decoration: none;
+}
+
+.footer-nav {
+    color: #fff;
+    text-decoration: none;
+}
+
+.footer-nav-active {
+    font-weight: bold;
+}
+
+.footer-nav:hover {
+    color: #fff;
+    text-decoration: underline;
+}
+
+.dropdown-footer {
+    background-color: #333333;
+    border: none;
+    transform: translateX(+150%) translateY(-10%);
+}
+
+.dropdown-footer>a {
+    color: #fff;
+    font-size: var(--bs-body-font-size);
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+.dropdown-footer>a:not(:last-child) {
+    border: none;
+}
+
+.dropdown-footer>a:hover {
+    background-color: rgba(0, 0, 0, 0);
+    color: #fff;
+    text-decoration: underline;
+}
+
+.carousel {
+    max-height: 525px;
+    overflow: hidden;
+}
+
+.carousel-inner,
+.carousel-item,
+.carousel-item>img {
+    max-height: 525px;
+}
+
+.carousel-item>img {
+    object-fit: cover;
+}
+
+.carousel-caption {
+    top: 55%;
+    transform: translateY(-50%);
+}
+
+.w-65 {
+    width: 65% !important;
+}
+
+.w-70 {
+    width: 70% !important;
+}
+
+.nav-tile {
+    overflow: hidden;
+    height: 100%;
+    min-height: 340px;
+}
+
+.nav-tile>.carousel-caption {
+    display: flex;
+    text-shadow: 4px 4px 0px #191737;
+    transform: translateY(-55%) translateX(-15%);
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    justify-items: middle;
+}
+
+.carousel-caption>p {
+    font-size: 128px;
+    font-family: 'Rasa', serif;
+    line-height: 100%;
+    width: 100%;
+}
+
+.nav-tile>img {
+    height: 100%;
+    object-fit: cover;
+    min-height: 340px;
+}
+
+.nav-tile>.card-img-overlay {
+    background-color: #191737ad;
+    color: #fff;
+    transform: translateY(100%);
+    transition: 0.1s ease-in-out;
+    top: auto;
+    bottom: 0;
+    position: absolute;
+}
+
+/* Show the overlay when hovering over the nav-tile */
+.nav-tile:hover>.card-img-overlay {
+    display: block;
+    transform: translateY(0);
+}
+
+#map {
+    height: 674px;
+}
+
+.fc-event {
+    border-width: 4px !important;
+}
+
+#countdown {
+    display: grid;
+    grid-template-columns: 3rem 3rem 3rem 3rem 3rem 3rem 3rem;
+    grid-template-rows: 3rem 3rem;
+    text-align: center;
+    justify-content: center;
+}
+
+#countdown>p {
+    text-align: center;
+}
+
+.lang-drop>input[type="text"] {
+    border-radius: 0;
+    margin: 0;
+    background-color: white;
+    font-family: 'Open Sans', sans-serif;
+}
+
+.countdown-counter {
+    font-size: 2rem;
+    font-weight: bold;
+    text-align: center;
+}
+
+.price {
+    font-size: 2rem;
+    font-weight: bold;
+    text-align: center;
+}
+
+.allday-pass {
+    background-color: #8EB3CB;
+    border-radius: 1em;
+    padding: 0.5em;
+}
+
+.gy-1>* {
+    margin-bottom: 1em;
+    margin-top: 1em
+}
+
+.shopping-circle {
+    position: absolute;
+    border-radius: 100%;
+    transform: translateY(12px);
+    background-color: #fff;
+    width: 1em;
+    height: 1em;
+}
+
+.shopping-circle>p {
+    transform: translate(35%, 10%);
+    font-family: 'Open Sans', sans-serif;
+    font-size: 1rem;
+    color: #000;
+    margin: auto;
+}
+
+.disabled {
+    pointer-events: none;
+    cursor: default;
+    opacity: 0.5;
+}
+
+@media (min-width: 960px) {
+    .lang-picker {
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+    }
+}
+
+@media (max-width: 960px) {
+    .dropdown-menu {
+        transform: translateX(0%);
+    }
+
+    .carousel-caption>p {
+        font-size: 64px;
+    }
+
+    .foot>div>ul {
+        padding: 0;
+    }
+
+    .carousel-caption>h1 {
+        font-size: 64px;
+        transform: translateY(-70%);
+    }
+}
+
+@media (min-width: 576px) {
+    .w-sm-auto {
+        width: auto !important;
+    }
+}

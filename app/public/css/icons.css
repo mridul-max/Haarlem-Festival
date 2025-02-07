@@ -1,0 +1,65 @@
+.haarlem-logo {
+    background-image: url(../img/svg/logo.svg);
+    width: 4em;
+    background-size: 100% 100%;
+}
+
+.search-icon {
+    background-image: url(../img/svg/search.svg);
+    width: 32px;
+    height: 32px;
+    background-size: 100% 100%;
+    margin-top: 12px;
+}
+
+.shopping-cart-icon {
+    background-image: url(../img/svg/shopping-cart.svg);
+    width: 32px;
+    height: 32px;
+    background-size: 100% 100%;
+    margin-top: 12px;
+}
+
+.user-icon {
+    background-image: url(../img/svg/user.svg);
+    width: 32px;
+    height: 32px;
+    background-size: 100% 100%;
+    margin-top: 12px;
+}
+
+.facebook-icon {
+    background-image: url(../img/svg/fb-icon.svg);
+    width: 48px;
+    height: 48px;
+}
+
+.twitter-icon {
+    background-image: url(../img/svg/twitter-icon.svg);
+    width: 48px;
+    height: 48px;
+}
+
+.instagram-icon {
+    background-image: url(../img/svg/instagram-icon.svg);
+    width: 48px;
+    height: 48px;
+}
+
+.spotify-icon {
+    background-image: url(../img/svg/spotify-icon.svg);
+    width: 48px;
+    height: 48px;
+}
+
+.homepage-icon {
+    background-image: url(../img/svg/home-icon.svg);
+    width: 48px;
+    height: 48px;
+}
+
+.btn-icon {
+    background-size: 80% 80%;
+    background-repeat: no-repeat;
+    background-position: center;
+}

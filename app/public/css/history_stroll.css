@@ -1,0 +1,434 @@
+.hero-image {
+    background-image: url("../img/jpg/history2.JPG");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    position: relative;
+    height: 600px;
+}
+
+.rectangle {
+    position: absolute;
+    bottom: 50px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(62, 45, 18, 100%);
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 50px;
+}
+
+.hero-text {
+    color: white;
+}
+
+.hero-button {
+    border-radius: 10px;
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(109, 74, 18, 100%);
+}
+
+button {
+    background-color: rgba(109, 74, 18, 100%);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 2vw;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #63482b;
+}
+
+.breadcrumb {
+    font-size: 1.2em;
+    margin: 20px 0;
+    color: #ffffff;
+    background-color: transparent !important;
+    border: none !important;
+}
+
+.breadcrumb a {
+    text-decoration: none;
+    color: #ffffff;
+    margin: 2px;
+    background-color: transparent !important;
+    border: none !important;
+}
+
+.breadcrumb a:hover {
+    color: #c9a9a9;
+}
+
+.title {
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+.title h2 {
+    color: #ffffff;
+}
+
+h2 {
+    font-size: 6vw;
+}
+
+hr {
+    width: 40%;
+    background-color: #ffffff;
+    margin: 20px auto !important;
+}
+
+.about-section {
+    color: #fff;
+    height: 350px;
+    padding: 20px;
+}
+
+.about-section h2 {
+    font-size: 2.5em;
+    margin-top: 0;
+    margin-left: 50px;
+}
+
+.about-section p {
+    line-height: 1.5em;
+}
+
+.location-and-time {
+    background-color: rgba(195, 190, 182, 1);
+    border-radius: 10px;
+}
+
+.ticket h4 {
+    color: ffffff;
+}
+
+.ticket-container {
+    background-color: rgba(195, 190, 182, 1);
+    border-radius: 10px;
+    padding: 20px;
+}
+
+.row {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 -15px;
+}
+
+.form-label {
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+.form-control,
+.form-select {
+    width: 100%;
+    padding: 0.375rem 0.75rem;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #212529;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.form-select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" fill="none"><path stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M1 2.5L4 5.5L7 2.5"></path></svg>');
+    background-position: right 0.5rem center;
+    background-repeat: no-repeat;
+    background-size: 8px 10px;
+    padding-right: 1.5rem;
+}
+
+.btn-primary {
+    color: #fff;
+    background-color: rgba(195, 190, 182, 100%) !important;
+}
+
+.btn-primary:hover {
+    color: #fff;
+}
+
+.applyPreferencesButton {
+    width: 40%;
+    color: rgba(62, 45, 18, 1) !important;
+    background-color: rgba(236, 234, 231, 100%) !important;
+    margin: 13% 30%;
+}
+
+.applyPreferencesButton:hover {
+    background-color: rgb(190, 165, 125) !important;
+}
+
+.scrollable-tickets {
+    height: 500px;
+    overflow-y: auto;
+    background-color: rgba(62, 45, 18, 100%);
+}
+
+.ticket {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    padding: 10px;
+}
+
+.ticket-image {
+    flex: 0 0 30%;
+    max-width: 30%;
+}
+
+.ticket-details {
+    flex: 1;
+    margin-left: 10px;
+}
+
+.ticket-title {
+    font-weight: bold;
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+}
+
+.ticket-price {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: rgba(195, 190, 182, 1);
+}
+
+.ticket-header {
+    color: #ffff;
+}
+
+.ticket-description {
+    margin-bottom: 0.5rem;
+}
+
+.ticket-info {
+    color: #ffffff;
+}
+
+.languageOfTour,
+.ticketOfTour {
+    margin-top: 50px !important;
+}
+
+.addToCartButton {
+    width: 100%;
+    font-weight: bold;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.addToCartButton:hover {
+    background-color: rgb(190, 165, 125) !important;
+}
+
+.destinations h2 {
+    margin-top: 50px;
+    color: #ffffff;
+}
+
+.st-bavo-church {
+    background-color: rgba(195, 190, 182, 1);
+    border-radius: 10px;
+    padding: 20px;
+}
+
+.ellipse {
+    margin-right: 80%;
+    width: 200px;
+    height: 150px;
+    border-radius: 50%;
+    background-image: url("../img/jpg/history2.JPG");
+    background-size: cover;
+    /* or "contain" */
+    background-position: center;
+    /* or another position */
+}
+
+.learn-more-btn {
+    margin-left: 65%;
+    background-color: rgba(62, 45, 18, 1);
+    color: rgba(236, 234, 231, 1);
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 18px;
+    width: 35%;
+    cursor: pointer;
+}
+
+.advertisement-drink {
+    width: 230px;
+    height: 200px;
+    border-radius: 50%;
+    background-image: url("../img/jpg/history2.JPG");
+    background-size: cover;
+    background-position: center;
+    margin-top: 35px !important;
+}
+
+.text-center {
+    color: #ffffff;
+    margin-top: 35px;
+}
+
+.destinations-section {
+    background-color: rgba(195, 190, 182, 1);
+    border-radius: 20px;
+    padding: 50px 0;
+    margin-bottom: 50px;
+}
+
+.destination-box {
+    border: #534741 solid 1px;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 15px;
+    height: 570px;
+}
+
+.destination-info {
+    margin-top: 10px;
+    color: rgba(62, 45, 18, 1);
+    border-radius: 10px !important;
+    border-color: #534741;
+}
+
+.destination-image {
+    background-image: url("../img/jpg/history2.JPG");
+    background-size: cover;
+    background-position: center;
+    border-radius: 10px;
+    height: 260px;
+    width: 200px;
+}
+
+.destination-learn-more-button {
+    background-color: #534741;
+    border-color: #534741;
+}
+
+.destination-learn-more-button:hover {
+    background-color: rgb(190, 165, 125) !important;
+}
+
+
+/* Event Calendar CSS */
+
+.calendar {
+    font-family: Arial, sans-serif;
+    max-width: 600px;
+    margin: 0 auto;
+    border-collapse: collapse;
+}
+
+.month {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #f2f2f2;
+    color: #333;
+    font-size: 20px;
+    padding: 10px;
+}
+
+.prev,
+.next {
+    cursor: pointer;
+}
+
+.weekdays {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #ddd;
+    color: #333;
+    font-size: 16px;
+    padding: 10px;
+}
+
+.days {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    padding: 10px;
+}
+
+.days div {
+    width: 14.28%;
+    text-align: center;
+    margin-bottom: 10px;
+    padding: 5px;
+    background-color: #fff;
+    color: #333;
+    font-size: 16px;
+    border-radius: 5px;
+}
+
+.days div:hover {
+    background-color: #f2f2f2;
+}
+
+.today {
+    background-color: #4caf50;
+    color: #fff;
+}
+
+.event {
+    background-color: #007bff;
+    color: #fff;
+}
+
+.event:hover {
+    background-color: #0056b3;
+}
+
+body {
+    background-color: rgba(62, 45, 18, 100%) !important;
+}
+
+@media screen and (max-width: 600px) {
+    h1 {
+        font-size: 10vw;
+    }
+    button {
+        font-size: 5vw;
+    }
+    .breadcrumb {
+        font-size: 4vw;
+    }
+    h2 {
+        font-size: 10vw;
+    }
+    hr {
+        height: 1vw;
+        margin: 5vw auto;
+    }
+    .about-section {
+        height: auto;
+        font-size: 5vw;
+    }
+    .location-box {
+        font-size: 5vw;
+    }
+    .destination-info {
+        height: 150px;
+    }
+}
