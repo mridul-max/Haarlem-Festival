@@ -2,9 +2,6 @@
 require_once("../repositories/NavigationBarItemRepository.php");
 require_once('PageService.php');
 
-/**
- * @author Konrad
- */
 class NavigationBarItemService
 {
     private $navBarItemRepository;

@@ -5,9 +5,6 @@ require_once(__DIR__ . "/AddressService.php");
 require_once(__DIR__ . "/../models/Location.php");
 require_once(__DIR__ . '/../models/Exceptions/ObjectNotFoundException.php');
 
-/**
- * @author Konrad
- */
 class LocationService
 {
     private LocationRepository $repo;

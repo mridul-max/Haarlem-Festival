@@ -11,11 +11,6 @@ require_once(__DIR__ . '/../services/UserService.php');
 
 use Dompdf\Dompdf;
 
-
-/**
- * Handels all email sending
- * @author: Joshua
- */
 class MailService
 {
 

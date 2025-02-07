@@ -4,9 +4,6 @@ require_once("TicketLinkService.php");
 require_once(__DIR__ . "/../repositories/JazzTicketLinkRepository.php");
 require_once(__DIR__ . "/../repositories/ImageRepository.php");
 
-/**
- * @author Konrad
- */
 class JazzTicketLinkService extends TicketLinkService
 {
     private $imageRepository;

@@ -3,9 +3,6 @@
 require_once(__DIR__ . '/../repositories/TicketTypeRepository.php');
 require_once(__DIR__ . '/../models/Types/TicketType.php');
 
-/**
- * @author Konrad
- */
 class TicketTypeService
 {
     private $ticketTypeRepository;
