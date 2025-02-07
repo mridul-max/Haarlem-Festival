@@ -75,11 +75,11 @@ h2 {
 
 .nav-item:not(:last-child) {
     /* Add separator to the right of nav-item */
-    border-right: 1px solid #525252;
+    border-right: 1px solid #1a41dd;
 }
 
 .nav-item:not(:first-child) {
-    border-left: 1px solid #525252;
+    border-left: 1px solid #1943e8;
 }
 
 .navbar {
@@ -101,7 +101,7 @@ h2 {
 
 .dropdown-menu {
     border-radius: 0;
-    border: 1px solid #525252;
+    border: 1px solid #1943e8;
     text-align: center;
     transform: translateX(-25%) translateY(-4px);
     z-index: 10000;
@@ -112,12 +112,12 @@ h2 {
 }
 
 .dropdown-menu>a:not(:last-child) {
-    border-bottom: 3px solid #525252;
+    border-bottom: 3px solid #1943e8;
 }
 
 .navbar.navbar-dark>div>ul>.dropdown>.dropdown-menu {
     color: #fff;
-    background-color: #333333;
+    background-color: #1943e8;
 }
 
 .navbar.navbar-dark>div>ul>.dropdown>.dropdown-menu>a {
@@ -126,11 +126,11 @@ h2 {
 }
 
 .navbar.navbar-dark>div>ul>.dropdown>.dropdown-menu>a:hover {
-    background-color: #525252;
+    background-color: #1943e8;
 }
 
 .foot {
-    background-color: #333333;
+    background-color: #1943e8;
     color: #fff;
     padding: 1rem;
     text-align: center;
@@ -157,7 +157,7 @@ h2 {
 }
 
 .dropdown-footer {
-    background-color: #333333;
+    background-color: #1943e8;
     border: none;
     transform: translateX(+150%) translateY(-10%);
 }
@@ -215,7 +215,7 @@ h2 {
 
 .nav-tile>.carousel-caption {
     display: flex;
-    text-shadow: 4px 4px 0px #191737;
+    text-shadow: 4px 4px 0px #1943e8;
     transform: translateY(-55%) translateX(-15%);
     margin: 0;
     padding: 0;

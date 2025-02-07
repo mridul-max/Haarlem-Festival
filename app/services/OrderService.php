@@ -2,10 +2,7 @@
 //Repositories
 require_once(__DIR__ . '/../repositories/OrderRepository.php');
 require_once(__DIR__ . '/../repositories/CustomerRepository.php');
-
-//Services
 require_once(__DIR__ . '/../services/TicketService.php');
-require_once(__DIR__ . '/../services/InvoiceService.php');
 require_once(__DIR__ . '/../services/TicketLinkService.php');
 
 //Models
@@ -16,7 +13,6 @@ class OrderService
 {
     private $orderRepository;
     private $customerRepository;
-    private $invoiceService;
     private $ticketService;
     private $ticketLinkService;
 
@@ -24,7 +20,6 @@ class OrderService
     {
         $this->orderRepository = new OrderRepository();
         $this->customerRepository = new CustomerRepository();
-        $this->invoiceService = new InvoiceService();
         $this->ticketService = new TicketService();
         $this->ticketLinkService = new TicketLinkService();
     }
@@ -33,8 +28,6 @@ class OrderService
     {
         //Get the order object
         $order = $this->orderRepository->getOrderById($id);
-        //Get the customer object attached in order
-        //Customer may be null if the order is made by a visitor
         if ($order->getCustomer() != null) {
             $order->setCustomer($this->customerRepository->getById($order->getCustomer()->getUserId()));
         } else {
@@ -176,38 +169,5 @@ class OrderService
         $this->deleteOrder($sessionOrder->getOrderId());
 
         return $customerOrder;
-    }
-
-    /**
-     * After checking out the cart, this function will be called to send the tickets and invoice to the user.
-     * @param Order $order
-     * @return void
-     * @throws Exception
-     */
-    public function sendTicketsAndInvoice(Order $order): void
-    {
-        // Clone object of $order to prevent the original object from being modified
-        $orderClone = clone $order;
-
-        // Generate the tickets for the order
-        $this->generateTicketsForOrder($order);
-        //Send all the tickets via email
-        $this->ticketService->getAllTicketsAndSend($orderClone);
-        //Send invoice via email
-        $this->invoiceService->sendInvoiceEmail($order);
-    }
-
-    /**
-     * Generates tickets for the order
-     */
-    private function generateTicketsForOrder(Order $order)
-    {
-        foreach ($order->getOrderItems() as $orderItem) {
-            $ticketLink = $this->ticketLinkService->getById($orderItem->getTicketLinkId());
-
-            for ($i = 0; $i < $orderItem->getQuantity(); $i++) {
-                $this->ticketService->insertTicket($order->getOrderId(), $orderItem, $ticketLink->getEvent(), $ticketLink->getTicketType()->getId());
-            }
-        }
     }
 }

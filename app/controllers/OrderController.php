@@ -2,20 +2,17 @@
 
 require_once(__DIR__ . "/../services/OrderService.php");
 require_once(__DIR__ . "/../services/CartService.php");
-require_once(__DIR__ . "/../services/InvoiceService.php");
 
 class OrderController
 {
     private $orderService;
     private $cartService;
-    private $invoiceService;
     private $ticketService;
 
     public function __construct()
     {
         $this->orderService = new OrderService();
         $this->cartService = new CartService();
-        $this->invoiceService = new InvoiceService();
         $this->ticketService = new TicketService();
     }
 
@@ -46,7 +43,6 @@ class OrderController
                 }
             }
         } catch (Throwable $e) {
-            Logger::write($e);
             $cartOrder = null;
         }
 
@@ -91,36 +87,6 @@ class OrderController
     {
         try {
             return $this->orderService->downloadOrders();
-        } catch (PDOException $e) {
-            echo $e->getMessage();
-        }
-    }
-
-    public function sendInvoiceOfOrder()
-    {
-        try {
-            if (session_status() == PHP_SESSION_NONE) {
-                session_start();
-            }
-            $customer = unserialize($_SESSION['user']);
-
-            $orders = $this->orderService->getOrderHistory($customer->getUserId());
-
-            // Get the specific order id from the url to send the invoice of that order
-            $orderId = $_GET['orderId'];
-
-            $order = $this->orderService->getOrderById($orderId);
-
-            if ($orders == null) {
-                throw new Exception("No orders found");
-            }
-
-            $this->invoiceService->sendInvoiceEmail($order);
-
-            // show an alert that the invoice has been sent
-            echo "<script>alert('Invoice has been sent to your email!')</script>";
-
-            require_once('../views/payment-funnel/order-history.php');
         } catch (PDOException $e) {
             echo $e->getMessage();
         }

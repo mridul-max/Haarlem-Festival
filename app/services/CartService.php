@@ -10,19 +10,13 @@ class CartService
 {
     private $orderService;
     private $customerService;
-    private $mollieService;
 
     public function __construct()
     {
         $this->orderService = new OrderService();
         $this->customerService = new CustomerService();
-        $this->mollieService = new MollieService();
     }
 
-    /**
-     * Checks if cart is initialised
-     * @return bool
-     */
     private function cartIsInitialised(): bool
     {
         if (session_status() == PHP_SESSION_NONE) {
@@ -238,60 +232,6 @@ class CartService
         $_SESSION["cartId"] = $customerOrder->getOrderId();
     }
 
-    /**
-     * @return Order
-     * @throws CartException | \Mollie\Api\Exceptions\ApiException
-     */
-    public function checkoutCart($paymentMethod): string
-    {
-        $cartOrder = $this->checkValidCheckout();
-
-        //Call mollie service for payment (either throws exception or returns void)
-        $paymentUrl = $this->mollieService->pay($cartOrder->getTotalPrice(), $cartOrder->getOrderId(), $cartOrder->getCustomer()->getUserId(), $paymentMethod);
-        return $paymentUrl;
-    }
-
-    /**
-     * Checks if the mollie API has returned a successful payment or not.
-     * @return Order
-     * @throws CartException
-     * @throws \Mollie\Api\Exceptions\ApiException
-     * @throws AuthenticationException
-     * @throws Exception
-     */
-    public function checkIfPaid(): Order
-    {
-        if (session_status() == PHP_SESSION_NONE) {
-            session_start();
-        }
-
-        if (!isset($_SESSION['payment_id'])) {
-            throw new CartException("Payment not started.");
-        }
-
-        // Get payment ID from session.
-        $paymentId = $_SESSION['payment_id'];
-        $cartOrder = $this->checkValidCheckout();
-
-        $customer = $cartOrder->getCustomer();
-
-        $payment = $this->mollieService->getPayment($paymentId);
-
-        if (!$payment->isPaid()) {
-            throw new CartException("Payment not completed.");
-        }
-
-        $cartOrder->setIsPaid(true);
-        $this->orderService->updateOrder($cartOrder->getOrderId(), $cartOrder);
-
-        //Remove the cart from the session
-        unset($_SESSION["cartId"]);
-
-        //Call invoice mailing (either throws exception or returns void)
-        $this->orderService->sendTicketsAndInvoice($cartOrder);
-
-        return $cartOrder;
-    }
 
     /**
      * Fetches the cart order from db and the validates the checkout values.
