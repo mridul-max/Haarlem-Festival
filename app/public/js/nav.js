@@ -1,7 +1,3 @@
-// Author: Konrad
-// Handles building the navbar.
-// Must be included in the HTML file, otherwise you won't get a navbar.
-
 import { isCurrentLink, getNavbarItems } from './utils.js';
 
 //Check if /js/cart.js is loaded.
@@ -97,59 +93,6 @@ function createDropdown(collapseLi, element) {
     return collapseLi;
 }
 
-const langs = ["NL", "LUX", "POL"];
-
-function getLanguages() {
-    return langs;
-}
-
-function createLanguagePicker() {
-    let collapseLi = document.createElement('li');
-    collapseLi.classList.add('nav-item');
-    collapseLi.classList.add('dropdown');
-    collapseLi.classList.add('lang-picker');
-    // open on hover
-    collapseLi.onmouseover = function () {
-        collapseLi.classList.add('show');
-        collapseLi.children[1].classList.add('show');
-        collapseLi.children[0].setAttribute('aria-expanded', 'true');
-    };
-    collapseLi.onmouseleave = function () {
-        collapseLi.classList.remove('show');
-        collapseLi.children[1].classList.remove('show');
-        collapseLi.children[0].setAttribute('aria-expanded', 'false');
-    };
-    // Create the a
-    let collapseA = document.createElement('a');
-    collapseA.classList.add('nav-link');
-    collapseA.classList.add('dropdown-bs-toggle');
-    collapseA.setAttribute('href', "#");
-    collapseA.setAttribute('id', 'navbarDropdown-lang');
-    collapseA.setAttribute('role', 'button');
-    collapseA.setAttribute('aria-haspopup', 'true');
-    collapseA.setAttribute('aria-expanded', 'false');
-    collapseA.textContent = "EN";
-    collapseLi.appendChild(collapseA);
-
-    // Create the dropdown menu
-    let collapseDropdownMenu = document.createElement('div');
-    collapseDropdownMenu.classList.add('dropdown-menu');
-    collapseDropdownMenu.classList.add('lang-drop');
-    collapseDropdownMenu.setAttribute('aria-labelledby', 'navbarDropdown-lang');
-    // Create the dropdown menu a
-    getLanguages().forEach(lang => {
-        let collapseDropdownMenuA = document.createElement('a');
-        collapseDropdownMenuA.classList.add('dropdown-item');
-        collapseDropdownMenuA.setAttribute('href', "#");
-        collapseDropdownMenuA.textContent = lang;
-        collapseDropdownMenu.appendChild(collapseDropdownMenuA);
-    });
-
-    // Add the dropdown menu to the li
-    collapseLi.appendChild(collapseDropdownMenu);
-    return collapseLi;
-}
-
 function createIcon(href, alt, iconClass) {
     let collapseLi = document.createElement('li');
     collapseLi.classList.add('nav-item');
@@ -194,8 +137,6 @@ function createSearch() {
     let collapseLi = document.createElement('li');
     collapseLi.classList.add('nav-item');
     collapseLi.classList.add('dropdown');
-    collapseLi.classList.add('lang-picker');
-    // open on hover
     collapseLi.onmouseover = function () {
         collapseLi.classList.add('show');
         collapseLi.children[1].classList.add('show');
@@ -211,7 +152,6 @@ function createSearch() {
     collapseA.classList.add('nav-link');
     collapseA.classList.add('dropdown-bs-toggle');
     collapseA.setAttribute('href', "#");
-    collapseA.setAttribute('id', 'navbarDropdown-lang');
     collapseA.setAttribute('role', 'button');
     collapseA.setAttribute('aria-haspopup', 'true');
     collapseA.setAttribute('aria-expanded', 'false');
@@ -221,8 +161,6 @@ function createSearch() {
     // Create the dropdown menu
     let collapseDropdownMenu = document.createElement('div');
     collapseDropdownMenu.classList.add('dropdown-menu');
-    collapseDropdownMenu.classList.add('lang-drop');
-    collapseDropdownMenu.setAttribute('aria-labelledby', 'navbarDropdown-lang');
 
     // Create input field for search and add it to dropdown
     let collapseDropdownMenuInput = document.createElement('input');
@@ -286,13 +224,12 @@ function loadNavbar() {
                 // add a
                 let collapseA = document.createElement('a');
                 collapseA.setAttribute('href', '/');
-
+                collapseA.classList.add('haarlem-logo');
+                collapseA.setAttribute('alt', 'Logo');
                 collapseA.classList.add('navbar-brand');
                 collapseA.classList.add('d-none');
                 collapseA.classList.add('d-lg-block');
                 collapseA.classList.add('d-xl-block');
-                collapseA.classList.add('haarlem-logo');
-                collapseA.setAttribute('alt', 'Logo');
 
                 collapseUl.appendChild(collapseA);
             }
@@ -307,9 +244,6 @@ function loadNavbar() {
         });
     })
         .then(() => {
-            // add language picker
-            //collapseUl.appendChild(createSearch());
-            collapseUl.appendChild(createLanguagePicker());
             collapseUl.appendChild(createIcon('/home/account', 'Account', 'user-icon'));
             collapseUl.appendChild(createIcon('/shopping-cart', 'Shopping cart', 'shopping-cart-icon'));
         });

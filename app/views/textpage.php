@@ -53,9 +53,6 @@
             <source src="/../videos/HomePage.mp4" type="video/mp4">
             Your browser does not support the video tag.
         </video>
-        <div class="video-overlay">
-            <h1><?= $title; ?></h1>
-        </div>
     </div>
 
     <div class="container">
