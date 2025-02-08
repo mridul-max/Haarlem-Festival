@@ -1,4 +1,3 @@
-// Author: Konrad
 class JazzEventList extends EventsList {
     constructor(container) {
         super(container);
@@ -298,18 +297,6 @@ class JazzEventList extends EventsList {
         // buttons row
         let rowButtons = document.createElement('div');
         rowButtons.classList.add('row', 'justify-content-end', 'py-2', 'gx-2', 'px-0');
-        // amount input
-        /*
-        let amountInput = document.createElement('input');
-        amountInput.type = 'number';
-        amountInput.classList.add('form-control');
-        amountInput.value = 1;
-        amountInput.min = 1;
-        amountInput.max = 10;
-        amountInput.style.width = '4.5em';
-        amountInput.style.marginRight = '0.5em';
-        */
-        // buy button
         if (event.ticketType.price == 0 || event.event.availableTickets > 0) {
             let buyButton = document.createElement('button');
             buyButton.classList.add('btn', 'btn-primary', 'col-3');

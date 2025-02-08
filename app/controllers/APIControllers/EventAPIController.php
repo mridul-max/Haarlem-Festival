@@ -42,13 +42,12 @@ class EventAPIController extends APIController
 
         // Load appropriate TicketLinkService.
         $request = $_SERVER['REQUEST_URI'];
-       {
+        if (
+            str_starts_with($request, EventAPIController::URI_JAZZ)
+        ) {
             if (str_starts_with($request, EventAPIController::URI_JAZZ)) {
                 $this->ticketLinkService = new JazzTicketLinkService();
-            } else {
-                $this->ticketLinkService = new DanceTicketLinkService();
             }
-
             // Music Services
             require_once(__DIR__ . '/../../services/ArtistService.php');
             $this->artistService = new ArtistService();
@@ -81,6 +80,7 @@ class EventAPIController extends APIController
                 return;
             } elseif (
                 str_starts_with($uri, EventAPIController::URI_JAZZ)
+                || str_starts_with($uri, EventAPIController::URI_DANCE)
             ) {
                 if (isset($_GET['artist'])) {
                     $artistId = $_GET['artist'];
@@ -307,37 +307,5 @@ class EventAPIController extends APIController
             Logger::write($e);
             $this->sendErrorMessage("Unable to delete the event.", 500);
         }
-    }
-
-    /**
-     * @throws Exception
-     */
-    private function buildDanceEventFromData($data): DanceEvent
-    {
-        //Fetch the location and number of available seats
-        $location = $this->locationService->getById($data['event']['locationId']);
-        $availableSeats = $location->getCapacity();
-
-        //Fetch the event type
-        $eventType = $this->eventTypeService->getById($data['event']['eventTypeId']);
-
-        //Fetch the artists
-        $artists = array();
-
-        foreach ($data['event']['artistIds'] as $artistId) {
-            $artists[] = $this->artistService->getById($artistId);
-        }
-
-        //Create and return the dance event
-        return new DanceEvent(
-            0,
-            $data['event']['name'],
-            new DateTime($data['event']['startTime']),
-            new DateTime($data['event']['endTime']),
-            $location,
-            $eventType,
-            $artists,
-            $availableSeats
-        );
     }
 }

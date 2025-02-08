@@ -1,14 +1,11 @@
-// Author: Konrad
-const START_DATE = '2023-07-27 10:00:00';
+const START_DATE = '2025-07-27 10:00:00';
 
-// Load FullCalendar's JS.
 let fcScript = document.createElement('script');
 fcScript.src = 'https://cdn.jsdelivr.net/npm/fullcalendar@6.1.4/index.global.min.js';
 fcScript.type = 'text/javascript';
 document.getElementsByTagName('head')[0].appendChild(fcScript);
 let calendar = null;
 
-// Wait for FullCalendar to be defined 5 times every 1 second.
 let calendarLoadRetries = 0;
 let calLoadInterval = setInterval(() => {
     if (calendarLoadRetries > 5) {
@@ -154,18 +151,10 @@ function loadCalendar() {
                         backgroundColor = "#d6e7ef";
                         borderColor = "#005990";
                         url = "/festival/jazz/event/" + e.event.id;
-                    } else if (e.event.eventType.id == 2) {
-                        backgroundColor = "#e2e0da";
-                        borderColor = "#412c0c";
-                        url = "/festival/yummy";
                     } else if (e.event.eventType.id == 3) {
                         backgroundColor = "#e2e0da";
                         borderColor = "#412c0c";
                         url = "/festival/history-stroll";
-                    } else if (e.event.eventType.id == 4) {
-                        backgroundColor = "#fff0ef";
-                        borderColor = "#9D49E0";
-                        url = "/festival/dance";
                     }
 
                     const startTime = new Date(e.event.startTime.date);

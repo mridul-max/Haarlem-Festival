@@ -11,12 +11,11 @@
     <link rel="stylesheet" href="/css/main_no_editor.css">
     <link rel="stylesheet" href="/css/icons.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css">
-    <title>Visit Haarlem - Event: <?= $event->getName(); ?></title>
+    <title>Haarlem Festival - Event: <?= $event->getName(); ?></title>
 </head>
 
 <body>
-    <nav class=" navbar navbar-expand-lg navbar-dark bg-dark">
-    </nav>
+    <nav class=" navbar navbar-expand-lg navbar-dark bg-dark">  </nav>
     <? if (count($event->getArtist()->getImages()) > 0) { ?>
         <div id="bannerCarousel" class="carousel slide" data-bs-ride="carousel">
             <div class="carousel-inner">

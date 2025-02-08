@@ -1,12 +1,6 @@
-// Author: Konrad
-// Handles the textpages - the pages of which content is saved/loaded from the database.
-
 let areImagesSwappedForSmall = false;
 let tableRowsWithImagesOnRight = document.querySelectorAll('tr td:nth-child(2) img');
 
-// If table tr has an image that is in second column, then swap the two tds
-// This is done because on small screen, we only have one column, so the image should be on top.
-// If we don't do it - the image will be below the text (ugly).
 function swapTableImg() {
     tableRowsWithImagesOnRight.forEach(element => {
         let parent = element.parentNode;
@@ -15,7 +9,6 @@ function swapTableImg() {
     });
 }
 
-// Check if we should swap the images on small screen
 function checkResize() {
     if ($(window).width() < 960) {
         if (areImagesSwappedForSmall) {
@@ -40,8 +33,6 @@ $(window).on('resize', function () {
 
 checkResize();
 
-// LOAD MODULES
-// Load Map (if present)
 if (document.getElementById('mapContainer')) {
     console.log('Map container found! Loading map...');
     let script = document.createElement('script');
@@ -66,7 +57,6 @@ if (document.getElementById('calendar')) {
     console.log('No calendar container found.');
 }
 
-// Load counter module (if present)
 if (document.getElementById('countdown')) {
     console.log('Countdown container found! Loading countdown...');
     let script = document.createElement('script');

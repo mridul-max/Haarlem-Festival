@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="/css/main.css">
     <link rel="stylesheet" href="/css/main_no_editor.css">
     <link rel="stylesheet" href="/css/icons.css">
-    <title>Visit Haarlem - Artist: <?= $artist->getName(); ?></title>
+    <title>Haarlem Festival- Artist: <?= $artist->getName(); ?></title>
 </head>
 
 <body>
