@@ -1,9 +1,5 @@
 <?php
 
-/**
- * Thrown when password verification fails.
- * @author Joshua
- */
 class IncorrectPasswordException extends Exception
 {
     public function __construct(){

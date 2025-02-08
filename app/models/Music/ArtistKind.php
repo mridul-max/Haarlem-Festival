@@ -1,8 +1,5 @@
 <?php
 
-/**
- * @author Konrad
- */
 class ArtistKind implements JsonSerializable
 {
     private $id;
