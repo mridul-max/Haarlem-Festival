@@ -1,7 +1,7 @@
 <?php
-require_once "MusicEvent.php";
+require_once "JazzBase.php";
 
-class JazzEvent extends MusicEvent implements JsonSerializable
+class JazzEvent extends JazzBase implements JsonSerializable
 {
     private Artist $artist;
 
