@@ -3,9 +3,6 @@
 require_once('APIController.php');
 require_once(__DIR__ . '/../../services/EventTypeService.php');
 
-/**
- * @author Konrad
- */
 class EventTypeAPIController extends APIController
 {
     private $eventTypeService;

@@ -4,9 +4,6 @@ require_once(__DIR__ . "/../../services/LocationService.php");
 require_once('APIController.php');
 require_once(__DIR__ . "/../../models/Exceptions/MissingVariableException.php");
 
-/**
- * @author Konrad
- */
 class LocationAPIController extends APIController
 {
     private $locationService;
@@ -47,8 +44,6 @@ class LocationAPIController extends APIController
 
             $sort = isset($_GET['sort']) ? $_GET['sort'] : null;
 
-            // Request locations by specific type
-            // Not to be confused with /api/locations/types
             if (str_starts_with($uri, "/api/locations/type/")) {
                 $this->getLocationsByType($uri, $sort);
                 return;

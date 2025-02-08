@@ -4,10 +4,6 @@ require_once(__DIR__ . "/../../services/AddressService.php");
 require_once(__DIR__ . "/../../models/Address.php");
 require_once(__DIR__ . "/../../models/Exceptions/MissingVariableException.php");
 
-/**
- * Controller for the Address API endpoint.
- * @author Joshua
- */
 class AddressAPIController extends APIController
 {
     private $addressService;
@@ -56,14 +52,10 @@ class AddressAPIController extends APIController
 
     protected function handlePostRequest($uri)
     {
-
-
-        //For other post requests, admin authentication is required.
         if (!$this->isLoggedInAsAdmin()) {
             $this->sendErrorMessage('You are not logged in as admin.', 401);
             return;
         }
-
         try {
             $address = $this->buildAddressFromPostedJson();
             $address = $this->addressService->insertAddress($address);
@@ -74,13 +66,9 @@ class AddressAPIController extends APIController
             $this->sendErrorMessage($e->getMessage(), 400);
         }
     }
-
     protected function handleGetRequest($uri)
     {
-        // This is a special case, we need to fetch the address from the external API.
         if (str_starts_with($uri, "/api/address/fetch-address")) {
-
-            // get from GET parameters
             $data = $_GET;
             $this->fetchAddress($data);
             return;
@@ -124,29 +112,6 @@ class AddressAPIController extends APIController
             $this->sendErrorMessage("Unable to update address.", 400);
         }
     }
-
-    protected function handleDeleteRequest($uri)
-    {
-        if (!$this->isLoggedInAsAdmin()) {
-            $this->sendErrorMessage('You are not logged in as admin.', 401);
-            return;
-        }
-
-        if (!is_numeric(basename($uri))) {
-            $this->sendErrorMessage("Invalid API Request. You can only delete specific addresses.", 400);
-            return;
-        }
-
-        try {
-            $addressId = basename($uri);
-            $this->addressService->deleteAddress($addressId);
-            $this->sendSuccessMessage("Address deleted successfully");
-        } catch (Throwable $e) {
-            Logger::write($e);
-            $this->sendErrorMessage("Unable to delete address.", 400);
-        }
-    }
-
     private function fetchAddress($data)
     {
         try {

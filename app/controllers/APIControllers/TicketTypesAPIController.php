@@ -3,9 +3,6 @@
 require_once('APIController.php');
 require_once(__DIR__ . '/../../services/TicketTypeService.php');
 
-/**
- * @author Konrad
- */
 class TicketTypesAPIController extends APIController
 {
     private $ttService;

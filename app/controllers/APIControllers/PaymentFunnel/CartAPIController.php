@@ -5,10 +5,6 @@ require_once(__DIR__ . "/../../../models/TicketLink.php");
 require_once(__DIR__ . "/../../../services/TicketLinkService.php");
 require_once(__DIR__ . "/../../../models/Exceptions/MissingVariableException.php");
 
-/**
- * This API controller is specifically used for the cart order in SESSION and communicates with the order backend.
- * @author Joshua
- */
 class CartAPIController extends APIController
 {
     private $cartService;
@@ -81,7 +77,6 @@ class CartAPIController extends APIController
     protected function handleDeleteRequest($uri)
     {
         try {
-            ///api/cart/item/{ticketlink} DELETE method - Deletes the whole order item from the cart order
             if (str_starts_with($uri, "/api/cart/item/") && is_numeric(basename($uri))) {
                 $ticketLinkId = basename($uri);
                 $cartOrder = $this->cartService->deleteWholeItem($ticketLinkId);

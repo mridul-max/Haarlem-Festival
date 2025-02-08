@@ -4,7 +4,6 @@ class APIController
 {
     public function initialize($request)
     {
-        // disable error reporting
         error_reporting(0);
 
         if ($request == null) {
@@ -29,22 +28,18 @@ class APIController
 
     protected function handleGetRequest($uri)
     {
-        // Can be implemented by child class
     }
 
     protected function handlePostRequest($uri)
     {
-        // Can be implemented by child class
     }
 
     protected function handlePutRequest($uri)
     {
-        // Can be implemented by child class
     }
 
     protected function handleDeleteRequest($uri)
     {
-        // Can be implemented by child class
     }
 
     final protected function sendErrorMessage($message, $code = 500)
@@ -118,7 +113,6 @@ class APIController
     final protected function getApiKeyFromBearer()
     {
         $bearer = "";
-        // Check if server is running on Apache or Nginx.
         if (isset($_SERVER['REDIRECT_HTTP_AUTHORIZATION'])) {
             $bearer = $_SERVER['REDIRECT_HTTP_AUTHORIZATION'];
         } else {

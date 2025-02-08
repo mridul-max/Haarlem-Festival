@@ -30,9 +30,6 @@ class OrderController
         }
 
         try {
-            // http://localhost/shopping-cart?id=16
-            // Check if "id" is set in the URL query string
-            // if so, other user is trying to share their cart with you
             if (isset($_GET["id"])) {
                 $cartOrder = $this->cartService->getCartByOrderId($_GET["id"]);
                 $shareMode = true;

@@ -2,9 +2,6 @@
 require_once(__DIR__ . "/APIController.php");
 require_once("../services/NavigationBarItemService.php");
 
-/**
- * @author Konrad
- */
 class NavBarAPIController extends APIController
 {
     private $navService;

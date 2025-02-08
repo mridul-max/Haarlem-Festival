@@ -1,9 +1,7 @@
 <?php
 
 require_once(__DIR__ . '/../../models/Event.php');
-require_once(__DIR__ . '/../../models/Music/MusicEvent.php');
 require_once(__DIR__ . '/../../models/Music/JazzEvent.php');
-require_once(__DIR__ . '/../../models/Music/DanceEvent.php');
 require_once(__DIR__ . '/../../services/EventService.php');
 require_once(__DIR__ . '/../../services/EventTypeService.php');
 require_once(__DIR__ . '/../../services/TicketTypeService.php');
@@ -14,14 +12,10 @@ require_once(__DIR__ . '/../../models/TicketLink.php');
 
 require_once(__DIR__ . '/../../services/TicketLinkService.php');
 require_once(__DIR__ . '/../../services/JazzTicketLinkService.php');
-require_once(__DIR__ . '/../../services/DanceTicketLinkService.php');
 require_once(__DIR__ . '/../../services/HistoryTicketLinkService.php');
 require_once(__DIR__ . '/../../services/PassTicketLinkService.php');
 require_once(__DIR__ . '/../../services/LocationService.php');
 
-/**
- * @author Konrad
- */
 class EventAPIController extends APIController
 {
     private $eventService;
@@ -35,9 +29,7 @@ class EventAPIController extends APIController
     private $artistService;
 
     public const URI_JAZZ = "/api/events/jazz";
-    public const URI_DANCE = "/api/events/dance";
     public const URI_STROLL = "/api/events/stroll";
-    public const URI_YUMMY = "/api/events/yummy";
     public const URI_PASSES = "/api/events/passes";
 
     public function __construct()
@@ -50,10 +42,7 @@ class EventAPIController extends APIController
 
         // Load appropriate TicketLinkService.
         $request = $_SERVER['REQUEST_URI'];
-        if (
-            str_starts_with($request, EventAPIController::URI_JAZZ)
-            || str_starts_with($request, EventAPIController::URI_DANCE)
-        ) {
+       {
             if (str_starts_with($request, EventAPIController::URI_JAZZ)) {
                 $this->ticketLinkService = new JazzTicketLinkService();
             } else {
@@ -92,7 +81,6 @@ class EventAPIController extends APIController
                 return;
             } elseif (
                 str_starts_with($uri, EventAPIController::URI_JAZZ)
-                || str_starts_with($uri, EventAPIController::URI_DANCE)
             ) {
                 if (isset($_GET['artist'])) {
                     $artistId = $_GET['artist'];
@@ -129,8 +117,6 @@ class EventAPIController extends APIController
         $data = json_decode(file_get_contents('php://input'), true);
 
         try {
-            // Valid ticket type is required.
-            // Check /api/tickettypes for available ticket types.
             $ticketTypeId = $data['ticketType']['id'];
             if (!isset($ticketTypeId)) {
                 $ticketTypeId = $data['ticketType'];
@@ -163,8 +149,6 @@ class EventAPIController extends APIController
                     $eventType,
                     $availableSeats,
                 );
-            } elseif (str_starts_with($uri, EventAPIController::URI_DANCE)) {
-                $event = $this->buildDanceEventFromData($data);
             } elseif (str_starts_with($uri, EventAPIController::URI_STROLL)) {
                 $guide = $this->festivalHistoryservice->getGuideById($data['guide']);
                 $location = $this->locationService->getById($data['location']);
@@ -251,9 +235,6 @@ class EventAPIController extends APIController
                     $eventType,
                     $availableSeats
                 );
-            } elseif (str_starts_with($uri, EventAPIController::URI_DANCE)) {
-                $event = $this->buildDanceEventFromData($data);
-                $event->setId(basename($uri));
             } elseif (str_starts_with($uri, EventAPIController::URI_STROLL)) {
                 $guide = $this->festivalHistoryservice->getGuideById($data['guide']);
                 $location = $this->locationService->getById($data['location']);

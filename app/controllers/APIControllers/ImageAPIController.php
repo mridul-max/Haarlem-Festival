@@ -2,9 +2,6 @@
 require_once(__DIR__ . "/APIController.php");
 require_once(__DIR__ . "/../../services/ImageService.php");
 
-/**
- * @author Konrad
- */
 class ImageAPIController extends APIController
 {
     private ImageService $service;

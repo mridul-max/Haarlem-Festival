@@ -102,7 +102,6 @@ class UserAPIController extends APIController
 
             $_SESSION["user"] = serialize($user);
 
-            //If the user is a customer, try to fetch the cart they might have saved during an earlier visit.
             if ($user->getUserTypeAsString() == "Customer") {
                 $this->cartService->getCartAfterLogin($user);
             }

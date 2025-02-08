@@ -32,8 +32,6 @@ class FestivalJazzController
 
             require(__DIR__ . self::JAZZ_ARTIST_PAGE);
         } catch (Exception $e) {
-            // redirect to 404
-            Logger::write($e);
             header("Location: /404");
             return;
         }
@@ -45,12 +43,9 @@ class FestivalJazzController
             $cartItem = $this->ciService->getByEventId(basename($uri));
             $event = $cartItem->getEvent();
 
-            // if event is of jazzevent type
             if (!($event instanceof JazzEvent)) {
-                // redirect to 404
                 return;
             }
-
 
             $afterThat = $this->ciService->getAll("", [
                 "day" => $event->getStartTime()->format('d'),
@@ -60,8 +55,6 @@ class FestivalJazzController
 
             require(__DIR__ . self::JAZZ_EVENT_PAGE);
         } catch (Exception $e) {
-            // redirect to 404
-            Logger::write($e);
             header("Location: /404");
             return;
         }

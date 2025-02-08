@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<!--Author: Joshua-->
 <html>
     <head>
         <title>Changes to Account</title>
