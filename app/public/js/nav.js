@@ -223,9 +223,7 @@ function loadNavbar() {
             if (Math.floor(data.length / 2) == data.indexOf(element) - 1) {
                 // add a
                 let collapseA = document.createElement('a');
-                collapseA.setAttribute('href', '/');
-                collapseA.classList.add('haarlem-logo');
-                collapseA.setAttribute('alt', 'Logo');
+                collapseA.setAttribute('href', '/');;
                 collapseA.classList.add('navbar-brand');
                 collapseA.classList.add('d-none');
                 collapseA.classList.add('d-lg-block');

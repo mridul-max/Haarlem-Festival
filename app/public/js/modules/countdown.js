@@ -1,6 +1,3 @@
-// Author: Konrad
-// A simple countdown timer that counts down to the start of the Festival.
-
 class Countdown {
     constructor(container) {
         this.container = container;
@@ -104,7 +101,6 @@ class Countdown {
                 return resolve(this.festivalStart);
             }
 
-            // Check if we have the start date in the localStorage.
             const festivalStart = localStorage.getItem('festivalStart');
             const festivalStartExpiration = localStorage.getItem('festivalStartExpiration');
             if (festivalStart && festivalStartExpiration && new Date().getTime() < festivalStartExpiration) {

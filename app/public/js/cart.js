@@ -1,15 +1,3 @@
-// Author: Konrad
-// An universal method of adding a new item to the cart.
-//
-// METHODS:
-// Cart.Add(itemID) - adds one item to the cart
-// Cart.Remove(itemID) - removes one item from the cart
-// Cart.UpdateCounter() - updates the counter of items in the cart
-// Cart.Get() - returns the cart object
-// Cart.Delete(itemId) - deletes the item from the cart (all instances of it)
-
-
-
 // load admin/modals.js
 function createToast(header, msg) {
     // Create bootstrap toast

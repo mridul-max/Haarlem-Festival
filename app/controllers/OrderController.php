@@ -46,9 +46,6 @@ class OrderController
         require('../views/payment-funnel/cart.php');
     }
 
-    /**
-     * Show the logged in customer's order history
-     */
     public function showOrderHistory()
     {
         try {
@@ -98,7 +95,6 @@ class OrderController
 
         $orders = $this->orderService->getOrderHistory($customer->getUserId());
 
-        // Get the specific order id from the url to send the ticket of that order
         $orderId = $_GET['orderId'];
 
         $order = $this->orderService->getOrderById($orderId);
@@ -109,7 +105,6 @@ class OrderController
 
         $this->ticketService->getAllTicketsAndSend($order);
 
-        // show an alert that the ticket has been sent
         echo "<script>alert('Ticket has been sent to your email!')</script>";
 
         require_once('../views/payment-funnel/order-history.php');

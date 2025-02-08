@@ -14,18 +14,31 @@
 
 .shopping-cart-icon {
     background-image: url(../img/svg/shopping-cart.svg);
-    width: 32px;
-    height: 32px;
+    width: 43px;
+    height: 43px;
     background-size: 100% 100%;
-    margin-top: 12px;
+    margin-top: 20px;
+    display: inline-block; /* Ensures the element behaves like a block */
+    background-color: rgb(21, 162, 209); /* Background color for the box */
+    border-radius: 5px; /* Rounded corners */
+    padding: 8px; /* Padding around the icon */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Optional: adds a subtle shadow */
+    vertical-align: middle; /* Aligns the icon vertically with text */ 
 }
 
 .user-icon {
     background-image: url(../img/svg/user.svg);
-    width: 32px;
-    height: 32px;
+    width: 43px;
+    height: 43px;
     background-size: 100% 100%;
-    margin-top: 12px;
+    margin-top: 20px;
+    display: inline-block; /* Ensures the element behaves like a block */
+    background-color: rgb(21, 162, 209); /* Background color for the box */
+    border-radius: 5px; /* Rounded corners */
+    padding: 8px; /* Padding around the icon */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Optional: adds a subtle shadow */
+    vertical-align: middle; /* Aligns the icon vertically with text */
+    z-index: 2; /* Bring hovered item forward */
 }
 
 .facebook-icon {

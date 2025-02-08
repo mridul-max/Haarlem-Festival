@@ -17,7 +17,6 @@ class User implements JsonSerializable
             'email' => $this->email,
             'firstName' => $this->firstName,
             'lastName' => $this->lastName,
-            //'hashPassword' => $this->hashPassword, We don't want to send the password to the client
             'userType' => $this->userType,
             'registrationDate' => $this->registrationDate->format('Y-m-d')
         ];

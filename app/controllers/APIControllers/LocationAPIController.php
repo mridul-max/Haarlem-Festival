@@ -63,9 +63,6 @@ class LocationAPIController extends APIController
         }
     }
 
-    /**
-     * Geocodes the given address and returns the result. (the longitude and latitude)
-     */
     private function getGeocode()
     {
         if (!isset($_GET['street'])) {

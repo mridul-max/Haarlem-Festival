@@ -161,7 +161,6 @@ class UserAPIController extends APIController
             $customer->setDateOfBirth($dateTime);
             $customer->setPhoneNumber($data->phoneNumber);
 
-            //Create address object from data, then set for customer
             $address = new Address();
             $address->setStreetName($data->address->streetName);
             $address->setHouseNumber($data->address->houseNumber);

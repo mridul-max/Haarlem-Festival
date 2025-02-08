@@ -45,7 +45,7 @@
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark"></nav>
+    <nav class="navbar navbar-expand-lg navbar-dark"></nav>
 
     <!-- Video Background Section -->
     <div class="video-container">

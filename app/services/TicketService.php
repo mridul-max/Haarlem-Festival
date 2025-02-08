@@ -74,16 +74,6 @@ class TicketService
     }
   }
 
-  public function getAllYummyTickets(Order $order): array
-  {
-    try {
-      $tickets = $this->repository->getAllYummyTicketsByOrderId($order);
-      return $tickets;
-    } catch (Exception $ex) {
-      throw ($ex);
-    }
-  }
-
   public function getAllPasses(Order $order): array
   {
     try {

@@ -1,7 +1,3 @@
-// ------------------------------
-// --- Used by /shopping-cart ---
-// ------------------------------
-
 const total = document.getElementById('total');
 const popup = document.getElementById('popup');
 

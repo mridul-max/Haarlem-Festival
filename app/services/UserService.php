@@ -37,9 +37,6 @@ class UserService
             throw new IncorrectPasswordException();
         }
 
-        //Nullify password, don't send that back to client.
-        //$user->setHashPassword(null);
-
         //If the user is a customer, return a customer object instead of a user object.
         if ($user->getUserType() == 3) {
             $customer = $this->customerService->getCustomerById($user->getUserId());

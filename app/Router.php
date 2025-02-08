@@ -106,22 +106,6 @@ class Router
             }
         }
 
-        if (str_starts_with($request, '/admin/')) {
-            $this->routeAdminPanels($request);
-            return;
-        }
-
-        if (
-            str_starts_with($request, '/manage')
-            || str_starts_with($request, '/addTour')
-            || str_starts_with($request, '/viewOrders')
-            || str_starts_with($request, '/downloadOrders')
-            || str_starts_with($request, '/updateEvent')
-        ) {
-            $this->routeAdminManage($request);
-            return;
-        }
-
         // split off the ?
         $request = explode("?", $request)[0];
 
@@ -377,107 +361,6 @@ class Router
                 break;
             case "/admin/nav":
                 require("views/admin/nav.php");
-                break;
-        }
-    }
-
-    private function routeAdminManage($request)
-    {
-        require_once("controllers/FestivalHistoryController.php");
-        $historyController = new FestivalHistoryController();
-
-        if (session_status() == PHP_SESSION_NONE) {
-            session_start();
-        }
-
-        if (!isset($_SESSION["user"])) {
-            header("Location: /");
-            return;
-        }
-
-        require_once(__DIR__ . "/models/User.php");
-        require_once(__DIR__ . "/models/Customer.php");
-        $user = unserialize($_SESSION['user']);
-
-        if ($user->getUserType() >= 2) {
-            header("Location: /");
-            return;
-        }
-
-        if (str_starts_with($request, "/manageApiKeys")) {
-            require_once("controllers/ApiKeyController.php");
-            $apiKeyController = new ApiKeyController();
-            $apiKeyController->init();
-            return;
-        }
-
-        switch ($request) {
-            case "/manageUsers":
-                require_once("controllers/UserController.php");
-                $userController = new UserController();
-                $userController->manageUsers();
-                break;
-            case "/manageImages":
-                require("views/admin/manageImages.php");
-                return;
-            case "/manageTextPages":
-            case "/manage":
-                require("views/admin/manageTextPages.php");
-                return;
-            case "/manageTicketTypes":
-                require("views/admin/manageTicketTypes.php");
-                return;
-            case "/manageLocations":
-                require("views/admin/manageLocations.php");
-                return;
-            case "/managePasses":
-                require("views/admin/managePasses.php");
-                return;
-            case "/manageNavBar":
-                require("views/admin/manageNavBar.php");
-                return;
-            case "/manageDance":
-            case "/manageDJs":
-                require("views/admin/Dance management/manageDance.php");
-                return;
-            case "/manageRestaurants":
-                require_once("controllers/RestaurantController.php");
-                $restaurantController = new RestaurantController();
-                $restaurantController->manageRestaurants();
-                break;
-            case "/manageSessions":
-                require_once("../models/Yummy/Restaurant.php");
-                require_once("../models/Yummy/RestaurantType.php");
-                require_once("../services/FestivalFoodService.php");
-                $festivalFoodService = new FestivalFoodService();
-                $events = $festivalFoodService->getRestarantEvents($_GET["restaurantId"]);
-                require_once("../views/admin/Restaurant management/manageSessions.php");
-                break;
-            case "/manageJazz":
-                require('views/admin/Jazz management/manageJazz.php');
-                break;
-            case "/manageHistory":
-                $historyController->getAllHistoryEvents();
-                break;
-            case "/addTour":
-                require_once("controllers/FestivalHistoryController.php");
-                $historyController = new FestivalHistoryController();
-                $historyController->addTour();
-                break;
-            case "/updateEvent":
-                require_once("controllers/FestivalHistoryController.php");
-                $historyController = new FestivalHistoryController();
-                $historyController->updateEvent();
-                break;
-            case "/viewOrders":
-                require_once("controllers/OrderController.php");
-                $ticketController = new OrderController();
-                $ticketController->getOrdersToExport();
-                break;
-            case "/downloadOrders":
-                require_once("controllers/OrderController.php");
-                $ticketController = new OrderController();
-                $ticketController->downloadOrders();
                 break;
         }
     }

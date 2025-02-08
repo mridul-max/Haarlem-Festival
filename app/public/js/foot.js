@@ -1,27 +1,18 @@
-// Author: Konrad
-// Handles creation of the footer.
-// Must be included in every HTML file, otherwise the footer will not be shown.
-
 import { getNavbarItems, isCurrentLink } from './utils.js';
 
 function getSocials() {
     // For now, we return a static list.
     return [
         {
-            name: 'Twitter',
+            name: 'X',
             url: 'https://twitter.com/gemeentehaarlem',
-            img_src: '/img/png/twitter.png'
+            img_src: '/img/png/X_logo.png'
         },
         {
             name: 'Instagram',
             url: 'https://www.instagram.com/gemeentehaarlem/',
             img_src: '/img/png/instagram.png'
         },
-        {
-            name: 'Facebook',
-            url: 'https://www.facebook.com/gemeentehaarlem/',
-            img_src: '/img/png/facebook.png'
-        }
     ]
 }
 function onLoad() {
@@ -52,13 +43,18 @@ function onLoad() {
     contactUlDiv.classList.add('row', 'd-inline');
     getSocials().forEach(social => {
         let contactUlLi = document.createElement('li');
-        contactUlLi.classList.add('d-inline', 'text-decoration-none', 'list-unstyled');
+        contactUlLi.classList.add('d-inline', 'me-3', 'list-unstyled'); // Added margin
+        
         let contactUlLiA = document.createElement('a');
         contactUlLiA.href = social.url;
+        
         let contactUlLiAImg = document.createElement('img');
-        contactUlLiAImg.classList.add('d-inline');
+        contactUlLiAImg.classList.add('d-inline', 'img-fluid');
+        contactUlLiAImg.style.width = '30px'; // Fixed size
+        contactUlLiAImg.style.height = '30px';
         contactUlLiAImg.src = social.img_src;
         contactUlLiAImg.alt = social.name;
+        
         contactUlLiA.appendChild(contactUlLiAImg);
         contactUlLi.appendChild(contactUlLiA);
         contactUlDiv.appendChild(contactUlLi);
@@ -112,35 +108,20 @@ function onLoad() {
             navLi.appendChild(navLiA);
             navUl.appendChild(navLi);
         })
-
-        // Add 'admin' link
-        let navLi = document.createElement('li');
-        navLi.classList.add('list-unstyled')
-        let navLiA = document.createElement('a');
-        navLiA.innerText = 'Admin';
-        navLiA.href = '/manage';
-        navLiA.classList.add('footer-nav');
-        navLi.appendChild(navLiA);
-        navUl.appendChild(navLi);
     });
-
-
 
     navDiv.appendChild(navUl);
     foot.appendChild(navDiv);
-
-    // lastly, the 'created by'
     const createdByDiv = document.createElement('div');
     createdByDiv.classList.add('col-lg-5', 'col-md-2', 'col-sm-12', 'col-xs-12');
     const createdByUl = document.createElement('ul');
     //span
     const createdByUlSpan = document.createElement('span');
-    createdByUlSpan.innerText = 'Created by';
     createdByUl.appendChild(createdByUlSpan);
     const createdByUlLi = document.createElement('li');
     createdByUlLi.classList.add('list-unstyled');
     const createdByUlLiP = document.createElement('p');
-    createdByUlLiP.innerText = '5Guys Productions';
+    createdByUlLiP.innerText = 'Copyright@ Mahedi & Taanzel 2025';
     createdByUlLi.appendChild(createdByUlLiP);
     createdByUl.appendChild(createdByUlLi);
     // add the div
