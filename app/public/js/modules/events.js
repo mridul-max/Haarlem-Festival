@@ -76,15 +76,4 @@ class EventsList {
     addToCart(event) {
         Cart.Add(event);
     }
-
-    noEvents() {
-        this.eventsContainer.innerHTML = '';
-        let noEventsContainer = document.createElement('div');
-        noEventsContainer.classList.add('col-12', 'text-center', 'card');
-        let noEvents = document.createElement('p');
-        noEvents.classList.add('text-center');
-        noEvents.innerText = 'Sorry! There are no events to display. Try changing your filters.';
-        noEventsContainer.appendChild(noEvents);
-        this.eventsContainer.appendChild(noEventsContainer);
-    }
 }

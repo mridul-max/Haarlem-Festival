@@ -61,8 +61,6 @@ class JazzEventList extends EventsList {
             this.loadEvents();
         });
 
-        // Day Filter
-        // add radio buttons for each day between 27th of July to 30th of July
         let dayFilter = document.createElement('div');
         dayFilter.classList.add('row');
         let dayHeader = document.createElement('h2');
@@ -242,15 +240,9 @@ class JazzEventList extends EventsList {
 
     async loadEvents() {
         let data = await this.getData();
-
-        this.clearEvents();
-        if (data.length == 0) {
-            this.noEvents();
-        } else {
-            for (let event of data) {
+        for (let event of data) {
                 this.addEvent(event);
             }
-        }
     }
 
     addEvent(event) {
