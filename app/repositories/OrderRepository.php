@@ -141,24 +141,16 @@ class OrderRepository extends Repository
         }
     }
 
-    public function getOrdersToExport($isPaid = null, $customerId = null)
+    public function getOrdersToExport($customerId = null)
     {
-        $sql = "select o.orderId, o.orderDate, u.firstName , u.lastName , u.email , e.name, t.ticketId, o.customerId, o.isPaid from orders o
+        $sql = "select o.orderId, o.orderDate, u.firstName , u.lastName , u.email , e.name, t.ticketId, o.customerId from orders o
         join users u on u.userId = o.customerId
         left join tickets t on t.orderId = t.ticketId
         left join events e on t.eventId = e.eventId ";
 
-        if ($isPaid != null) {
-            $sql .= " WHERE isPaid = " . ($isPaid == 'true' || $isPaid == 1 ? "1" : "0") . " ";
-        }
-
         if ($customerId != null) {
-
-            if ($isPaid != null) {
-                $sql .= " AND ";
-            } else {
-                $sql .= " WHERE  ";
-            }
+ 
+            $sql .= " WHERE  ";
 
             $sql .= " o.customerId = :customerId ";
         }
@@ -221,7 +213,7 @@ class OrderRepository extends Repository
 
     public function getOrderHistory($customerId): array
     {
-        $sql = "SELECT * FROM orders WHERE customerId=:customerId AND isPaid = 1";
+        $sql = "SELECT * FROM orders WHERE customerId=:customerId";
 
         $stmt = $this->connection->prepare($sql);
         $stmt->bindValue(":customerId", $customerId);
@@ -327,35 +319,6 @@ class OrderRepository extends Repository
         $stmt = $this->connection->prepare($sql);
         $stmt->bindValue(":orderItemId", $orderItemId);
         $stmt->execute();
-    }
-
-
-    //This method is used to remove orders that were never linked to an account and that are 2 days old.
-    private function removeOldOrders()
-    {
-        $sql = "DELETE
-                FROM orders
-                WHERE customerId IS NULL
-                AND orderDate < DATE_SUB(NOW(), INTERVAL 2 DAY)";
-        $stmt = $this->connection->prepare($sql);
-        $stmt->execute();
-    }
-
-    private function buildOrder($row): Order
-    {
-        $order = new Order();
-        $order->setOrderId($row['orderId']);
-        $order->setOrderDate(DateTime::createFromFormat('Y-m-d H:i:s', $row['orderDate']));
-
-        if ($row['customerId'] != null) {
-            $order->setCustomer(new Customer());
-            $order->getCustomer()->setUserId($row['customerId']);
-        } else {
-            $order->setCustomer(null);
-        }
-        $order->setIsPaid($row['isPaid']);
-
-        return $order;
     }
 
     private function buildOrderItem($row): OrderItem

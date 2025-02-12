@@ -48,7 +48,7 @@ class OrderController
 
     public function showOrderHistory()
     {
-        try {
+    
             if (session_status() == PHP_SESSION_NONE) {
                 session_start();
             }
@@ -60,9 +60,6 @@ class OrderController
                 throw new Exception("No orders found");
             }
             require_once('../views/payment-funnel/order-history.php');
-        } catch (Throwable $e) {
-            Logger::write($e);
-        }
     }
 
     public function getOrdersToExport()

@@ -77,40 +77,9 @@ async function shareMyCart() {
 }
 
 function checkout() {
-
-    let idealRadButton = document.getElementById('method-ideal');
-    let cardRadButton = document.getElementById('method-card');
-    let klarnaRadButton = document.getElementById('method-klarna');
-    let paymentMethod;
-
-    if (idealRadButton.checked)
-        paymentMethod = "ideal";
-    else if (cardRadButton.checked)
-        paymentMethod = "card";
-    else if (klarnaRadButton.checked)
-        paymentMethod = "klarna";
-    else {
-        showErrorPopup("Please select a payment method before checking out.");
-        return;
-    }
-
-    Cart.Checkout(paymentMethod)
-        .then(data => {
-            hideErrorPopup();
-            //console.log(data);
-
-            // We should get JSON with paymentUrl.
-            // Redirect to that url.
-
-            if (data.paymentUrl) {
-                window.location.href = data.paymentUrl;
-            }
-
-        })
-        .catch(error => {
-            //console.log(error);
-            showErrorPopup(error.data.error_message);
-        });
+    Cart.Checkout()
+    showOrderHistory();   
+       
 }
 
 function showOrderHistory() {

@@ -35,18 +35,13 @@ class OrderAPIController extends APIController
 
     private function getAllOrders()
     {
-        $isPaid = null;
         $customerId = null;
-
-        if (isset($_GET['isPaid'])) {
-            $isPaid = $_GET['isPaid'];
-        }
 
         if (isset($_GET['customerId'])) {
             $customerId = $_GET['customerId'];
         }
 
-        $orders = $this->orderService->getOrdersToExport($isPaid, $customerId);
+        $orders = $this->orderService->getOrdersToExport($customerId);
         echo json_encode($orders);
     }
 

@@ -648,8 +648,30 @@ CREATE TABLE `ticketlinks` (
 
 
 LOCK TABLES `ticketlinks` WRITE;
-INSERT INTO `ticketlinks` VALUES (1,1,2);
-INSERT INTO `ticketlinks` VALUES (2,2,2);
+INSERT INTO `ticketlinks` (`ticketLinkId`, `ticketTypeId`, `eventId`) VALUES
+(5, 4, 1),   -- Gumbo Kings (Main Hall)
+(6, 4, 7),   -- Ntjam Rosie (Main Hall)
+(7, 6, 8),   -- Gumbo Kings (Grote Markt)
+(13, 4, 19), -- Gare du Nord (Main Hall)
+(14, 6, 20), -- Gare du Nord (Grote Markt)
+(15, 9, 21), -- The Nordanians (Third Hall)
+(16, 6, 22), -- The Nordanians (Grote Markt)
+(17, 4, 23), -- Evolve (Main Hall)
+(18, 6, 24), -- Evolve (Grote Markt)
+(20, 6, 26), -- Wicked Jazz Sounds (Grote Markt)
+(21, 5, 27), -- Tom Thomson Assemble (Second Hall)
+(22, 5, 28), -- Jonna Fraser (Second Hall)
+(23, 4, 29), -- Fox & The Mayors (Main Hall)
+(24, 4, 30), -- Uncle Sue (Main Hall)
+(26, 5, 32), -- Myles Sanko (Second Hall)
+(27, 5, 33), -- Ruis Soundsystem (Second Hall)
+(28, 6, 34), -- Ruis Soundsystem (Grote Markt)
+(29, 5, 35), -- The Family XL (Second Hall)
+(30, 4, 36), -- Rilan & The Bombardiers (Main Hall)
+(31, 4, 37), -- Soul Six (Main Hall)
+(32, 9, 38), -- Han Bennink (Third Hall)
+(33, 9, 39), -- Lilth Merlot (Third Hall)
+(36, 5, 42); -- Wicked Jazz Sounds (Second Hall)
 UNLOCK TABLES;
 
 
@@ -706,7 +728,6 @@ CREATE TABLE `tickets` (
   CONSTRAINT `tickets_FK_1` FOREIGN KEY (`ticketTypeId`) REFERENCES `tickettypes` (`ticketTypeId`) ON UPDATE CASCADE,
   CONSTRAINT `tickets_ibfk_1` FOREIGN KEY (`eventId`) REFERENCES `events` (`eventId`) ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=101 DEFAULT CHARSET=utf8;
-
 
 DROP TABLE IF EXISTS `strollhistoryticket`;
 CREATE TABLE `strollhistoryticket` (

@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="/css/main_no_editor.css">
     <link rel="stylesheet" href="/css/icons.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css">
-    <title>Haarlem Festival - Event: <?= var_dump($event->getName()); ?></title>
+    <title>Haarlem Festival - Event: <?= $event->getName(); ?></title>
 </head>
 
 <body>

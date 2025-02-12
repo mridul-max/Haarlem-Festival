@@ -41,9 +41,9 @@ class OrderService
         return $this->orderRepository->getOrderHistory($customerId);
     }
 
-    public function getOrdersToExport($isPaid = null, $customerId = null)
+    public function getOrdersToExport($customerId = null)
     {
-        return $this->orderRepository->getOrdersToExport($isPaid, $customerId);
+        return $this->orderRepository->getOrdersToExport($customerId);
     }
 
     public function downloadOrders()

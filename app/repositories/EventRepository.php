@@ -413,7 +413,6 @@ class EventRepository extends Repository
 
     public function getPasses(): array
     {
-        // passes don't have availableTickets
         $sql = "SELECT e.eventId, e.name, e.startTime, e.endTime, e.festivalEventType
             FROM events e
             WHERE e.availableTickets = 0";
