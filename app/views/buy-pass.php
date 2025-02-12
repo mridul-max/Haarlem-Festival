@@ -25,7 +25,7 @@
                     <div class="col-12">
                         <h2>Event</h2>
                         <select id="event-type" class="form-select">
-                            <option value="0" disabled> === Select an event === </option>
+                            <option value="0" disabled> Select an event </option>
                         </select>
                     </div>
                 </div>

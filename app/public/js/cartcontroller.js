@@ -78,8 +78,7 @@ async function shareMyCart() {
 
 function checkout() {
     Cart.Checkout()
-    showOrderHistory();   
-       
+    showOrderHistory();
 }
 
 function showOrderHistory() {

@@ -62,7 +62,7 @@ class OrderRepository extends Repository
     {
         $sql = "SELECT * FROM orders";
 
-        if ($isPaid != null) {
+        if ($isPaid == null) {
             $sql .= " WHERE isPaid = :isPaid";
         }
         if ($limit != null) {
@@ -74,7 +74,7 @@ class OrderRepository extends Repository
 
         $stmt = $this->connection->prepare($sql);
 
-        if ($isPaid != null) {
+        if ($isPaid == null) {
             $stmt->bindValue(":isPaid", htmlspecialchars($isPaid));
         }
         if ($limit != null) {
@@ -125,7 +125,7 @@ class OrderRepository extends Repository
 
     public function getCartOrderForCustomer(int $customerId): ?Order
     {
-        $sql = "SELECT * FROM orders WHERE customerId = :customerId AND isPaid = 0";
+        $sql = "SELECT * FROM orders WHERE customerId = :customerId";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindValue(":customerId", htmlspecialchars($customerId));
         $stmt->execute();
@@ -184,32 +184,7 @@ class OrderRepository extends Repository
         }
         return $orders;
     }
-
-    public function getOrderForInvoice($orderId)
-    {
-        $sql = "select o.orderDate, u.firstName , u.lastName , u.email , e.name, t.ticketId, o.customerId from orders o
-        join users u on u.userId = o.customerId
-        join tickets t on t.orderId = o.orderId
-        join events e on t.eventId = e.eventId
-        where o.orderId = :orderId ";
-
-        $stmt = $this->connection->prepare($sql);
-        $stmt->bindValue(":orderId", $orderId);
-        $stmt->execute();
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        $order = new Order();
-        $order->setOrderId($orderId);
-        $order->setOrderDate(DateTime::createFromFormat('Y-m-d H:i:s', $result['orderDate']));
-        $orderItems = $this->getOrderItemsByOrderId($orderId);
-        $order->setOrderItems($orderItems);
-
-        $customerRep = new CustomerRepository();
-        $customer = $customerRep->getById($result['customerId']);
-        $order->setCustomer($customer);
-
-        return $order;
-    }
+    
 
     public function getOrderHistory($customerId): array
     {
@@ -319,6 +294,20 @@ class OrderRepository extends Repository
         $stmt = $this->connection->prepare($sql);
         $stmt->bindValue(":orderItemId", $orderItemId);
         $stmt->execute();
+    }
+
+    private function buildOrder($row): Order
+    {
+        $order = new Order();
+        $order->setOrderId($row['orderId']);
+        $order->setOrderDate(DateTime::createFromFormat('Y-m-d H:i:s', $row['orderDate']));
+        if ($row['customerId'] != null) {
+            $order->setCustomer(new Customer());
+            $order->getCustomer()->setUserId($row['customerId']);
+        } else {
+            $order->setCustomer(null);
+        }
+        return $order;
     }
 
     private function buildOrderItem($row): OrderItem

@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="theme-color" content="#fffbfa">
     <meta name="robots" content="noindex, nofollow">
-    <title>Visit Haarlem Cart</title>
+    <title>Haarlem Festival Cart</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
     <link rel="stylesheet" href="/css/main.css">
     <link rel="stylesheet" href="/css/icons.css">
@@ -21,27 +21,12 @@
     <section class="h-100 h-custom">
         <div class="container py-5 h-100">
             <div class="row d-flex justify-content-center align-items-center h-100">
-                <div class="col-10">
-                    <?php if (!$shareMode) { ?>
+                <div class="col-10"> 
                         <button class="btn btn-secondary float-end my-2 <?php if (!$isLoggedIn) echo "disabled"; ?> " style="width: 9em;" onclick="showOrderHistory()">
                             My Order History
                         </button>
-                    <?php } ?>
-                    <br>
-                    <h2 class="mb-5 mt-5">Shopping Cart <?= $shareMode ? "(Shared)" : "" ?></h2>
-                    <!--Pop-up message-->
-                    <div id="popup" class="alert d-none"></div>
-
                     <div class="row">
 
-                        <!-- Cart disclaimer in case there's nothing -->
-
-                        <?php
-                        if (!$isCustomerOrVisitor && !$shareMode) {
-                            echo "<h4>As an admin or employee, you are not allowed to purchase things.</h4>";
-                        } elseif (!$hasStuffInCart && !$shareMode) {
-                            echo "<h4>Your cart is empty. Go buy some stuff!</h4>";
-                        } else { ?>
 
                             <!-- Cart items list -->
 
@@ -89,20 +74,6 @@
                                     </div>
                                 <?php } ?>
                             </div>
-
-                            <!-- Buttons on the right-->
-
-                            <?php if (!$shareMode) { ?>
-                                <div class="col-5 d-grid">
-
-                                    <input type="hidden" id="share-id" value="<?= $cartOrder->getOrderId(); ?>">
-                                    <div class="input-group">
-                                        <input type=text" class="form-control" readonly id="share-url-text">
-                                        <button class="btn btn-primary" onclick="shareMyCart()">Share</button>
-                                    </div>
-                                </div>
-                        <?php }
-                        } ?>
                     </div>
                     <br>
                     <br>
@@ -119,28 +90,6 @@
                             <br>
                             <div> <?php if (!$isLoggedIn) echo "Log in to check out your cart."; ?> </div>
                             <br>
-                            <h5>Payment method:</h5>
-                            <div class="form-check">
-                                <input class="form-check-input <?php if (!$isLoggedIn) echo "disabled"; ?> " type="radio" name="paymentMethodRadios" id="method-ideal" value="method-ideal">
-                                <label class="form-check-label" for="method-ideal">
-                                    iDEAL
-                                </label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input <?php if (!$isLoggedIn) echo "disabled"; ?> " type="radio" name="paymentMethodRadios" id="method-card" value="method-card">
-                                <label class="form-check-label" for="method-card">
-                                    Credit Card
-                                </label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input <?php if (!$isLoggedIn) echo "disabled"; ?> " type="radio" name="paymentMethodRadios" id="method-klarna" value="method-klarna">
-                                <label class="form-check-label" for="method-klarna">
-                                    Klarna (Pay later)
-                                </label>
-                            </div>
-
-                        <?php } else { ?>
-                            <p>This cart has been shared with you.</p>
                         <?php } ?>
                     <?php
                     }
