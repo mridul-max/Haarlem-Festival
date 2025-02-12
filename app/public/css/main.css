@@ -32,7 +32,7 @@ p {
 }
 
 .navbar-nav .nav-item {
-    margin: 0 -2px; /* Overlap border width */
+    margin: 0 10px; /* Overlap border width */
 }
 
 .navbar-nav .nav-link {
