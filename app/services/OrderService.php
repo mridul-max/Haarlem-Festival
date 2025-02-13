@@ -26,7 +26,6 @@ class OrderService
 
     public function getOrderById(int $id): Order
     {
-        //Get the order object
         $order = $this->orderRepository->getOrderById($id);
         if ($order->getCustomer() != null) {
             $order->setCustomer($this->customerRepository->getById($order->getCustomer()->getUserId()));
@@ -39,53 +38,6 @@ class OrderService
     public function getOrderHistory(int $customerId): array
     {
         return $this->orderRepository->getOrderHistory($customerId);
-    }
-
-    public function getOrdersToExport($customerId = null)
-    {
-        return $this->orderRepository->getOrdersToExport($customerId);
-    }
-
-    public function downloadOrders()
-    {
-        $orders = $this->getOrdersToExport(true);
-
-        if ($orders == null) {
-            echo "No orders found";
-            exit;
-        }
-
-        $fileName = "orders-data_" . date('Y-m-d') . ".xls";
-        $fields = array('ID', 'ORDER DATE', 'CUSTOMER NAME', 'CUSTOMER EMAIL', 'EVENT NAME', 'BASE PRICE', 'PRICE', 'QUANTITY', 'TOTAL BASE PRICE', 'TOTAL PRICE');
-        $excelData = implode("\t", $fields) . "\n";
-
-        foreach ($orders as $order) {
-            foreach ($order->getOrderItems() as $orderItem) {
-                $lineData = array(
-                    $order->getOrderId(),
-                    date_format($order->getOrderDate(), 'd/m/Y'),
-                    $order->getCustomer()->getFirstName() . " " . $order->getCustomer()->getLastName(),
-                    $order->getCustomer()->getEmail(),
-                    $orderItem->getEventName(),
-                    number_format($orderItem->getBasePrice(), 2),
-                    number_format($orderItem->getFullTicketPrice(), 2),
-                    $orderItem->getQuantity(),
-                    number_format($orderItem->getTotalBasePrice(), 2),
-                    number_format($orderItem->getTotalFullPrice(), 2)
-                );
-                array_walk($lineData, array($this, 'filterData'));
-                $excelData .= implode("\t", $lineData) . "\n";
-            }
-        }
-
-        // Send HTTP headers
-        header("Content-type: application/vnd.ms-excel; charset=utf-8");
-        header("Content-Disposition: attachment; filename=\"$fileName\"");
-        header("Cache-Control: max-age=0");
-
-        // Output the Excel data to the output buffer and exit
-        echo $excelData;
-        exit;
     }
 
     private function filterData(&$str)
@@ -146,26 +98,20 @@ class OrderService
         $this->orderRepository->deleteOrderItem($orderItemId);
     }
 
-    //If the customer has an unpaid order and logs in while having created another order as a visitor, merge the two orders.
     public function mergeOrders(Order $customerOrder, Order $sessionOrder): Order
     {
-        //Nested loop that checks if there are order items that represent the same ticket
         foreach ($customerOrder->getOrderItems() as $customerOrderItem) {
             foreach ($sessionOrder->getOrderItems() as $sessionOrderItem) {
 
                 if ($sessionOrderItem->getTicketLinkId() == $customerOrderItem->getTicketLinkId()) {
-                    //If there is a match in ticket link then add the quantity of the sessionOrderItem to the customerOrderItem and update
                     $customerOrderItem->setQuantity($customerOrderItem->getQuantity() + $sessionOrderItem->getQuantity());
                     $this->updateOrderItem($customerOrderItem->getOrderItemId(), $customerOrderItem);
                 } else {
-                    //If the orderItem is unique then we add it to the customerOrder and update it
                     $this->orderRepository->updateOrderItem($sessionOrderItem->getOrderItemId(), $sessionOrderItem, $customerOrder->getOrderId());
                     $customerOrder->addOrderItem($sessionOrderItem);
                 }
             }
         }
-
-        //Delete the sessionOrder from db
         $this->deleteOrder($sessionOrder->getOrderId());
 
         return $customerOrder;

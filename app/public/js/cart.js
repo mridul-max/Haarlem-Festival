@@ -122,7 +122,6 @@ function createToast(header, msg) {
         });
     }
 
-    //Updates the counter in the nav bar by getting the count from the cart order from the server
     Cart.UpdateCounter = function () {
         fetch(apiUrl + '/count',
             {
@@ -151,7 +150,6 @@ function createToast(header, msg) {
             );
     }
 
-    //Deletes the item from the cart
     Cart.Delete = function (itemId) {
         return new Promise((resolve, reject) => {
             fetch(apiUrl + '/item/' + itemId,
@@ -169,17 +167,9 @@ function createToast(header, msg) {
         });
     }
 
-    //Checks out the cart
-    Cart.Checkout = function (paymentMethod) {
-        console.log(paymentMethod);
+    Cart.Checkout = function () {
         return new Promise((resolve, reject) => {
-            fetch(apiUrl + '/checkout',
-                {
-                    method: 'POST',
-                    body: JSON.stringify({
-                        "paymentMethod": paymentMethod
-                    }),
-                }).then(response => response.json())
+            fetch(apiUrl + '/checkout').then(response => response.json())
                 .then(data => {
                     Cart.UpdateCounter();
                     resolve(data);

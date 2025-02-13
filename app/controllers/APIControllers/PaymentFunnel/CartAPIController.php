@@ -18,12 +18,10 @@ class CartAPIController extends APIController
     {
         try {
             if ($uri == "/api/cart/count") {
-                //api/cart/count GET - returns the amount of items in the cart
                 $count = $this->cartService->getCount();
                 $response = ["count" => $count];
                 parent::sendResponse($response);
             } else if ($uri == "/api/cart") {
-                //api/cart GET - returns the cart order as an order object
                 $cartOrder = $this->cartService->getCart();
                 parent::sendResponse($cartOrder);
             } else if ($uri == "/api/cart/checkpayment") {
@@ -40,25 +38,20 @@ class CartAPIController extends APIController
     protected function handlePostRequest($uri)
     {
         try {
-            //api/cart/add/{ticketlinkId} POST method - adds one item of the ticket link to the cart order
             if (str_starts_with($uri, "/api/cart/add/") && is_numeric(basename($uri))) {
                 $ticketLinkId = basename($uri);
                 $cartOrder = $this->cartService->addItem($ticketLinkId);
                 parent::sendResponse($cartOrder);
                 return;
             }
-            //api/cart/remove/{ticketlinkId} POST method - removes one item of the ticket link from the cart order
             else if (str_starts_with($uri, "/api/cart/remove/") && is_numeric(basename($uri))) {
                 $ticketLinkId = basename($uri);
                 $cartOrder = $this->cartService->removeItem($ticketLinkId);
                 parent::sendResponse($cartOrder);
                 return;
             }
-            ///api/cart/checkout POST method - checks out the cart
             else if (str_starts_with($uri, "/api/cart/checkout")) {
-                $paymentMethod = $this->getPaymentMethodFromPost();
-                $paymentUrl = $this->cartService->checkoutCart($paymentMethod);
-                echo json_encode(["paymentUrl" => $paymentUrl]);
+                $chkout = $this->cartService->checkoutCart();
                 return;
             } else {
                 throw new Exception("Bad request.", 400);
@@ -88,15 +81,5 @@ class CartAPIController extends APIController
         } catch (Throwable $e) {
             parent::sendErrorMessage($e->getMessage(), $e->getCode());
         }
-    }
-
-    private function getPaymentMethodFromPost()
-    {
-        $json = file_get_contents('php://input');
-        $data = json_decode($json);
-
-        if (!isset($data->paymentMethod))
-            throw new MissingVariableException("Payment method not specified.", 400);
-        return $data->paymentMethod;
     }
 }
