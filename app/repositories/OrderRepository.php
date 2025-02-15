@@ -10,10 +10,6 @@ require_once(__DIR__ . "/UserRepository.php");
 require_once(__DIR__ . "/CustomerRepository.php");
 require_once(__DIR__ . "/TicketLinkRepository.php");
 
-/**
- * Repository for orders and orderitems
- * @author Joshua
- */
 class OrderRepository extends Repository
 {
     public function __construct()

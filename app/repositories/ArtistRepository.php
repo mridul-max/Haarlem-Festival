@@ -5,9 +5,6 @@ require_once("../models/Music/Artist.php");
 require_once("../models/Music/ArtistKind.php");
 require_once("../models/Exceptions/ObjectNotFoundException.php");
 
-/**
- * @author Konrad
- */
 class ArtistRepository extends Repository
 {
     public function __construct()

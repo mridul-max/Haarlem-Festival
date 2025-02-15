@@ -4,17 +4,8 @@ require_once("Repository.php");
 require_once("../models/Page.php");
 require_once("../models/TextPage.php");
 
-/**
- * @author Konrad
- */
 class PageRepository extends Repository
 {
-    /**
-     * Handles building of the page objects.
-     * @param mixed $arr An array from the 'stmt->fetchAll()'.
-     * @return array An array of the pages
-     * (note: it can be empty, if criteria set by the previous matching was not met).
-     */
     private function pageBuilder($arr): array
     {
         $output = array();

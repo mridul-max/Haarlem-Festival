@@ -213,6 +213,7 @@ p {
 
 #countdown>p {
     text-align: center;
+    color:  #291fb1ad;
 }
 
 .lang-drop>input[type="text"] {

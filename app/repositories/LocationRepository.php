@@ -3,9 +3,6 @@
 require_once("Repository.php");
 require_once(__DIR__ . "/../models/Location.php");
 
-/**
- * @author Konrad
- */
 class LocationRepository extends Repository
 {
     private function buildLocations($arr): array

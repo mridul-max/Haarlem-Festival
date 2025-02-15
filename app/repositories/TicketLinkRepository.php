@@ -5,11 +5,6 @@ require_once(__DIR__ . "/../models/Types/TicketType.php");
 require_once(__DIR__ . "/../models/Types/EventType.php");
 require_once("Repository.php");
 
-/**
- * A basic ticket link repository.
- * Should be inherited by other ticket link repositories for more specific functionality.
- * @author Konrad
- */
 class TicketLinkRepository extends Repository
 {
     protected function build($arr): array

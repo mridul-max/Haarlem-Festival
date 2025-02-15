@@ -24,7 +24,6 @@ CREATE TABLE `addresses` (
 
 
 LOCK TABLES `addresses` WRITE;
-/*!40000 ALTER TABLE `addresses` DISABLE KEYS */;
 INSERT INTO `addresses` VALUES (5,'Spelderholt','213 ','1025BM','Amsterdam','Netherlands');
 INSERT INTO `addresses` VALUES (11,'Poelenburg','254','1504NL','Zaandam','Netherlands');
 INSERT INTO `addresses` VALUES (13,'Zijlsingel','2','2013DN','Haarlem','Netherlands');

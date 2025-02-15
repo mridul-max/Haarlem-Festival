@@ -3,9 +3,6 @@
 require_once(__DIR__ . "/../models/Types/EventType.php");
 require_once("Repository.php");
 
-/**
- * @author Konrad
- */
 class EventTypeRepository extends Repository
 {
     private function build($arr): array

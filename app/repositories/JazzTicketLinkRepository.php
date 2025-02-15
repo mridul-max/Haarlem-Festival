@@ -10,9 +10,6 @@ require_once(__DIR__ . "/../models/Music/ArtistKind.php");
 require_once(__DIR__ . "/../models/Music/JazzEvent.php");
 require_once(__DIR__ . "/../models/TicketLink.php");
 
-/**
- * @author Konrad
- */
 class JazzTicketLinkRepository extends TicketLinkRepository
 {
     protected function build($arr): array
