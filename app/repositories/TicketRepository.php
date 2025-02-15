@@ -51,12 +51,6 @@ class TicketRepository extends Repository
             case 'jazz':
                 $eventTable = 'jazzevents';
                 break;
-            case 'yummy':
-                $eventTable = 'yummyevents';
-                break;
-            case 'dance':
-                $eventTable = 'danceevents';
-                break;
             default:
                 throw new InvalidArgumentException('Invalid event type');
         }
@@ -147,69 +141,6 @@ class TicketRepository extends Repository
         }
 
         return $tickets;
-    }
-
-    public function getAllYummyTicketsByOrderId(Order $order)
-    {
-
-        $sql = "SELECT t.ticketId, t.eventId, t.isScanned, SUM(t2.ticketTypePrice) AS ticketPrice, c.userId, l.name AS locationName
-            FROM tickets t
-            JOIN orders o ON o.orderId = t.orderId
-            JOIN events e ON t.eventId = e.eventId
-            JOIN festivaleventtypes f ON e.festivalEventType = f.eventTypeId
-            JOIN customers c ON o.customerId = c.userId
-            JOIN tickettypes t2 ON t.ticketTypeId = t2.ticketTypeId
-            JOIN restaurantevent h ON e.eventId = h.eventId
-            JOIN restaurants r ON h.restaurantId = r.restaurantId
-            JOIN locations l ON r.addressId = l.addressId
-            WHERE t.orderid = :orderId
-            GROUP BY t.ticketId, t.eventId, t.isScanned, c.userId, locationName";
-
-        $stmt = $this->connection->prepare($sql);
-        $stmt->bindValue(":orderId", $order->getOrderId());
-        $stmt->execute();
-        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-
-        $tickets = [];
-
-        foreach ($result as $row) {
-            $ticket = $this->getTicketById($row['ticketId']);
-            $ticket->setTicketId($row['ticketId']);
-            $ticket->setFullPrice($row['ticketPrice']);
-
-            $userRep = new UserRepository();
-            $user = $userRep->getById($row['userId']);
-            $customer = new Customer();
-            $customer->setFirstName($user->getFirstName());
-            $customer->setLastName($user->getLastName());
-            $customer->setEmail($user->getEmail());
-            $order->setCustomer($customer);
-
-            require_once("RestaurantRepository.php");
-
-            $eventRep = new RestaurantRepository();
-            $ticketLink = $eventRep->getByEventId($row['eventId']);
-            $ticket->setEvent($ticketLink->getEvent());
-
-            array_push($tickets, $ticket);
-        }
-
-        return $tickets;
-    }
-
-
-    public function markTicketAsScanned(Ticket $ticket)
-    {
-        try {
-            $ticketId = $ticket->getTicketId();
-            $sql = "UPDATE tickets SET isScanned = 1 WHERE ticketId = :ticketId";
-            $stmt = $this->connection->prepare($sql);
-            $stmt->bindValue(":ticketId", $ticketId);
-            $stmt->execute();
-        } catch (Exception $ex) {
-            throw ($ex);
-        }
     }
 
     public function getTicketById($ticketId)

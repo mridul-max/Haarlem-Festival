@@ -26,8 +26,6 @@
                             My Order History
                         </button>
                     <div class="row">
-
-
                             <!-- Cart items list -->
 
                             <div class="col-7">

@@ -137,51 +137,6 @@ class OrderRepository extends Repository
         }
     }
 
-    public function getOrdersToExport($customerId = null)
-    {
-        $sql = "select o.orderId, o.orderDate, u.firstName , u.lastName , u.email , e.name, t.ticketId, o.customerId from orders o
-        join users u on u.userId = o.customerId
-        left join tickets t on t.orderId = t.ticketId
-        left join events e on t.eventId = e.eventId ";
-
-        if ($customerId != null) {
- 
-            $sql .= " WHERE  ";
-
-            $sql .= " o.customerId = :customerId ";
-        }
-
-        $stmt = $this->connection->prepare($sql);
-
-        if ($customerId != null) {
-            $stmt->bindValue(":customerId", htmlspecialchars($customerId));
-        }
-
-        $stmt->execute();
-        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-        $orders = [];
-        $customerRep = new CustomerRepository();
-        foreach ($result as $row) {
-            $order = new Order();
-            $order->setOrderId($row['orderId']);
-            $order->setOrderDate(DateTime::createFromFormat('Y-m-d H:i:s', $row['orderDate']));
-            $orderItems = $this->getOrderItemsByOrderId($row['orderId']);
-            $order->setOrderItems($orderItems);
-            $order->setIsPaid($row['isPaid']);
-
-
-            if ($row['customerId'] != null) {
-                $customer = $customerRep->getById($row['customerId']);
-                $order->setCustomer($customer);
-            }
-
-            array_push($orders, $order);
-        }
-        return $orders;
-    }
-    
-
     public function getOrderHistory($customerId): array
     {
         $sql = "SELECT * FROM orders WHERE customerId=:customerId";
@@ -277,7 +232,6 @@ class OrderRepository extends Repository
 
     public function deleteOrder(int $orderId)
     {
-        //Deletes one order. BEWARE: CASCADES, so it deletes ALL LINKED ORDERITEMS as well.
         $sql = "DELETE FROM orders WHERE orderId = :orderId";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindValue(":orderId", $orderId);
@@ -285,7 +239,6 @@ class OrderRepository extends Repository
 
     public function deleteOrderItem(int $orderItemId)
     {
-        //Deletes one order item.
         $sql = "DELETE FROM orderitems WHERE orderItemId = :orderItemId";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindValue(":orderItemId", $orderItemId);
