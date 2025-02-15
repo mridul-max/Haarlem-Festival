@@ -156,34 +156,6 @@ class Router
                 $festivalHistoryController = new FestivalHistoryController();
                 $festivalHistoryController->loadHistoryStrollPage();
                 break;
-            case "/addSession":
-                require_once("controllers/FestivalFoodController.php");
-                $festivalFoodController = new FestivalFoodController();
-                $festivalFoodController->addSession($_GET['id']);
-                break;
-            case "/insertSession":
-                require_once("controllers/FestivalFoodController.php");
-                $festivalFoodController = new FestivalFoodController();
-                $festivalFoodController->insertSession($_GET['restaurantId']);
-                break;
-            case "/updateSession":
-                require_once("controllers/FestivalFoodController.php");
-                $festivalFoodController = new FestivalFoodController();
-                $festivalFoodController->updateSession($_GET['id']);
-                break;
-            case "/editSession":
-                require_once("controllers/FestivalFoodController.php");
-                $festivalFoodController = new FestivalFoodController();
-                $festivalFoodController->editSession();
-                break;
-            case "/checkout":
-                require_once("controllers/PaymentController.php");
-                $ticketController = new PaymentController();
-                $ticketController->submitPaymentToMollie();
-                break;
-            case "/payment-success":
-                require_once("views/payment-funnel/paymentSuccess.php");
-                break;
 
             default:
                 $this->route404($message);
@@ -248,52 +220,5 @@ class Router
         }
 
         $controller->initialize($request);
-    }
-
-    private function routeAdminPanels($request)
-    {
-        if (session_status() == PHP_SESSION_NONE) {
-            session_start();
-        }
-
-        if (!isset($_SESSION["user"])) {
-            header("Location: /");
-            return;
-        }
-
-        require_once("models/User.php");
-        $user = unserialize($_SESSION['user']);
-
-        if ($user->getUserType() > 2) {
-            header("Location: /");
-            return;
-        }
-
-        switch ($request) {
-            case "/admin/editor":
-                require("views/admin/editor.php");
-                break;
-            case "/admin/artists":
-                require("views/admin/artists.php");
-                break;
-            case "/admin/jazz-events":
-                require("views/admin/jazz-events.php");
-                break;
-            case "/admin/images":
-                require("views/admin/images.php");
-                break;
-            case "/admin/locations":
-                require("views/admin/locations.php");
-                break;
-            case "/admin/tickettypes":
-                require("views/admin/tickettypes.php");
-                break;
-            case "/admin/passes":
-                require("views/admin/passes.php");
-                break;
-            case "/admin/nav":
-                require("views/admin/nav.php");
-                break;
-        }
     }
 }
