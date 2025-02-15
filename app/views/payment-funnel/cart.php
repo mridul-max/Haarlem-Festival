@@ -21,77 +21,74 @@
     <section class="h-100 h-custom">
         <div class="container py-5 h-100">
             <div class="row d-flex justify-content-center align-items-center h-100">
-                <div class="col-10"> 
-                        <button class="btn btn-secondary float-end my-2 <?php if (!$isLoggedIn) echo "disabled"; ?> " style="width: 9em;" onclick="showOrderHistory()">
-                            My Order History
-                        </button>
-                    <div class="row">
-                            <!-- Cart items list -->
+                <div class="col-10">
+                    <button class="btn btn-secondary float-end my-2 <?php if (!$isLoggedIn) echo "disabled"; ?>" style="width: 9em;" onclick="showOrderHistory()">
+                        My Order History
+                    </button>
 
-                            <div class="col-7">
-                                <?php
-                                $orderItems = $cartOrder->getOrderItems();
-                                foreach ($orderItems as $orderItem) {
-                                    $id = $orderItem->getTicketLinkId(); ?>
-                                    <div id="cart-item-<?= $id ?>" class="card p-3 m-3" style="width: 100%">
-                                        <div class="card-header" style="width: 100%">
-                                            <h5 class="card-title">
-                                                <?= $orderItem->getEventName() ?> -
-                                                <?= $orderItem->getTicketName() ?>
-                                            </h5>
-                                        </div>
-                                        <div class="card-body" style="width: 100%">
-                                            <h6 class="card-subtitle">
-                                                Price per ticket: <strong>&euro; <?= number_format($orderItem->getFullTicketPrice(), 2, '.'); ?></strong>
-                                                (&euro; <?= number_format($orderItem->getBasePrice(), 2, '.'); ?>
-                                                + &euro; <?= number_format($orderItem->getVatAmount(), 2, '.'); ?> VAT)
-                                            </h6>
-                                        </div>
-                                        <br>
-                                        <div style="width: 100%">
+                    <!-- Progress Bar -->
+                    <div class="progress-bar-container">
+                        <div class="progress-bar" style="width: 50%;"></div>
+                    </div>
+
+                    <!-- Timeline for Order History -->
+                    <div class="timeline">
+                        <?php
+                        $orderItems = $cartOrder->getOrderItems();
+                        foreach ($orderItems as $orderItem) {
+                            $id = $orderItem->getTicketLinkId(); ?>
+                            <div class="timeline-item">
+                                <div id="cart-item-<?= $id ?>" class="card p-3">
+                                    <div class="card-header">
+                                        <h5 class="card-title">
+                                            <?= $orderItem->getEventName() ?> -
+                                            <?= $orderItem->getTicketName() ?>
+                                        </h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <h6 class="card-subtitle mb-2 text-muted">
+                                            Price per ticket: <strong>&euro; <?= number_format($orderItem->getFullTicketPrice(), 2, '.'); ?></strong>
+                                            (&euro; <?= number_format($orderItem->getBasePrice(), 2, '.'); ?>
+                                            + &euro; <?= number_format($orderItem->getVatAmount(), 2, '.'); ?> VAT)
+                                        </h6>
+                                        <div class="quantity-control mt-3">
                                             <?php if (!$shareMode) { ?>
-                                                <button id="cart-item-remove-<?= $id ?>" class="btn btn-light" style="width: 10%">-</button>
+                                                <button id="cart-item-remove-<?= $id ?>" class="btn btn-danger">-</button>
                                             <?php } ?>
                                             <span id="cart-item-counter-<?= $id ?>" class="fw-bold mx-2">
                                                 <?= $orderItem->getQuantity() ?>
                                             </span>
                                             <?php if (!$shareMode) { ?>
-                                                <button id="cart-item-add-<?= $id ?>" class="btn btn-light" style="width: 10%">+</button>
+                                                <button id="cart-item-add-<?= $id ?>" class="btn btn-success">+</button>
                                             <?php } ?>
                                             <?php if (!$shareMode) { ?>
-                                                <button id="order-item-delete-<?= $id ?>" class="btn btn-danger ms-5" style="width: 6em;">DELETE</button>
+                                                <button id="order-item-delete-<?= $id ?>" class="btn btn-danger ms-3">DELETE</button>
                                             <?php } ?>
-                                            <span id="cart-item-unit-price-<?= $id ?>" class=" d-none float-end">
+                                            <span id="cart-item-unit-price-<?= $id ?>" class="d-none">
                                                 <?= $orderItem->getFullTicketPrice() ?>
                                             </span>
-                                            <span id="cart-item-total-price-<?= $id ?>" class="price float-end">
+                                            <span id="cart-item-total-price-<?= $id ?>" class="price ms-auto">
                                                 &euro; <?= number_format($orderItem->getTotalFullPrice(), 2, '.'); ?>
                                             </span>
                                         </div>
-                                        <br>
                                     </div>
-                                <?php } ?>
+                                </div>
                             </div>
+                        <?php } ?>
                     </div>
-                    <br>
-                    <br>
 
-                    <!-- Checkout section-->
-
-                    <?php if ($hasStuffInCart) {
-                    ?>
-                        <h4 id="total">Total price: &euro;
+                    <!-- Checkout Section -->
+                    <?php if ($hasStuffInCart) { ?>
+                        <h4 id="total" class="total-price">Total price: &euro;
                             <?= number_format($cartOrder->getTotalPrice(), 2, '.'); ?>
                         </h4>
                         <?php if (!$shareMode) { ?>
-                            <button class="btn btn-primary <?php if (!$isLoggedIn) echo "disabled"; ?> " onclick="checkout()">Check out</button>
+                            <button class="btn btn-primary checkout-btn <?php if (!$isLoggedIn) echo "disabled"; ?>" onclick="checkout()">Check out</button>
                             <br>
                             <div> <?php if (!$isLoggedIn) echo "Log in to check out your cart."; ?> </div>
                             <br>
                         <?php } ?>
-                    <?php
-                    }
-                    ?>
+                    <?php } ?>
                 </div>
             </div>
         </div>

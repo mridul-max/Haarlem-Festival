@@ -83,25 +83,6 @@ class APIController
         }
     }
 
-    final protected function isLoggedInAsAdmin()
-    {
-        require_once(__DIR__ . '/../../models/User.php');
-        try {
-            if ($this->isLoggedIn()) {
-                if (session_status() == PHP_SESSION_NONE) {
-                    session_start();
-                }
-
-                return unserialize($_SESSION["user"])->getUserType() == "1";
-            }
-
-            return false;
-        } catch (Exception $e) {
-            Logger::write($e);
-            return false;
-        }
-    }
-
     final protected function isApiKeyValid()
     {
         require_once(__DIR__ . "/../../services/ApiKeyService.php");
