@@ -91,8 +91,6 @@ class UserAPIController extends APIController
             if (!isset($data->email) || !isset($data->password))
                 throw new MissingVariableException("Email and password are required", 400);
 
-
-            //Fetch user (method throws error if user not found)
             $user = $this->userService->verifyUser($data);
 
             //Store user in session
@@ -193,7 +191,6 @@ class UserAPIController extends APIController
             $data->email = htmlspecialchars($data->email);
             $reset_token = bin2hex(random_bytes(16));
 
-            // here insert the email, reset token, and timestamp into the database (timestamp will be 24 hours from now)
             $userService->storeResetToken($data->email, $reset_token);
             $user = $userService->getUserByEmail($data->email);
             $emailService = new MailService();
@@ -228,75 +225,6 @@ class UserAPIController extends APIController
         }
     }
 
-    private function addUser($data)
-    {
-        if (!$this->isLoggedInAsAdmin()) {
-            parent::sendErrorMessage("You are not authorized to perform this action.");
-            return;
-        }
-
-        try {
-            if (
-                $data == null || !isset($data->firstName) || !isset($data->lastName)
-                || !isset($data->email) || !isset($data->password) || empty($data->firstName) ||
-                empty($data->lastName) || empty($data->email) || empty($data->password)
-            ) {
-                throw new Exception("Please fill all the information.");
-            }
-
-            $now = new DateTime();
-            $this->userService->createNewUser($data->email, $data->firstName, $data->lastName, $data->password, $data->role, $now);
-            parent::sendSuccessMessage("User added.");
-        } catch (Throwable $ex) {
-            Logger::write($ex);
-            parent::sendErrorMessage($ex->getMessage());
-        }
-    }
-
-    private function deleteUser($data)
-    {
-        if (!$this->isLoggedInAsAdmin()) {
-            parent::sendErrorMessage("You are not authorized to perform this action.");
-            return;
-        }
-
-        try {
-
-            if ($data == null || !isset($data->id)) {
-                throw new MissingVariableException("No data received.");
-            }
-            $data->id = htmlspecialchars($data->id);
-
-            $this->userService->deleteUser($data);
-            parent::sendSuccessMessage("User deleted.");
-        } catch (Throwable $ex) {
-            Logger::write($ex);
-            parent::sendErrorMessage($ex->getMessage());
-        }
-    }
-
-    private function updateUser($data)
-    {
-        if (!$this->isLoggedInAsAdmin()) {
-            parent::sendErrorMessage("You are not authorized to perform this action.");
-            return;
-        }
-
-        try {
-            if (
-                $data == null || !isset($data->id) || !isset($data->firstName)
-                || !isset($data->lastName) || !isset($data->email) || empty($data->firstName) ||
-                empty($data->lastName) || empty($data->email)
-            ) {
-                throw new Exception("No data received.");
-            }
-            $this->userService->updateUser($data);
-            parent::sendSuccessMessage("User updated.");
-        } catch (Throwable $ex) {
-            Logger::write($ex);
-            parent::sendErrorMessage($ex->getMessage());
-        }
-    }
 
     private function updateCustomer($data)
     {

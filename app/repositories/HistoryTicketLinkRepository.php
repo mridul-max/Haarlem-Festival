@@ -1,8 +1,8 @@
 <?php
 
-// require_once("EventRepository.php");
-// require_once("TicketLinkRepository.php");
-// require_once("TicketTypeRepository.php");
+require_once("EventRepository.php");
+require_once("TicketLinkRepository.php");
+require_once("TicketTypeRepository.php");
 
 class HistoryTicketLinkRepository extends TicketLinkRepository
 {
