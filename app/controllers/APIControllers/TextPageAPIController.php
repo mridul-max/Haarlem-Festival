@@ -3,7 +3,6 @@
 require_once(__DIR__ . "/APIController.php");
 require_once(__DIR__ . "/../../services/PageService.php");
 
-
 class TextPageAPIController extends APIController
 {
     private $service;

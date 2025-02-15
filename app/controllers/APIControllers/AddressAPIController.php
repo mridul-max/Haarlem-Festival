@@ -50,22 +50,6 @@ class AddressAPIController extends APIController
         return $address;
     }
 
-    protected function handlePostRequest($uri)
-    {
-        if (!$this->isLoggedInAsAdmin()) {
-            $this->sendErrorMessage('You are not logged in as admin.', 401);
-            return;
-        }
-        try {
-            $address = $this->buildAddressFromPostedJson();
-            $address = $this->addressService->insertAddress($address);
-
-            echo json_encode($address);
-        } catch (Throwable $e) {
-            Logger::write($e);
-            $this->sendErrorMessage($e->getMessage(), 400);
-        }
-    }
     protected function handleGetRequest($uri)
     {
         if (str_starts_with($uri, "/api/address/fetch-address")) {
@@ -88,30 +72,6 @@ class AddressAPIController extends APIController
         }
     }
 
-    protected function handlePutRequest($uri)
-    {
-        if (!$this->isLoggedInAsAdmin()) {
-            $this->sendErrorMessage('You are not logged in as admin.', 403);
-            return;
-        }
-
-        if (!is_numeric(basename($uri))) {
-            $this->sendErrorMessage("Invalid API Request. You can only update specific addresses.", 400);
-            return;
-        }
-
-        $addressId = basename($uri);
-
-        try {
-            $address = $this->buildAddressFromPostedJson();
-            $address = $this->addressService->updateAddress($addressId, $address);
-
-            echo json_encode($address);
-        } catch (Throwable $e) {
-            Logger::write($e);
-            $this->sendErrorMessage("Unable to update address.", 400);
-        }
-    }
     private function fetchAddress($data)
     {
         try {
