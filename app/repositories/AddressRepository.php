@@ -58,38 +58,4 @@ class AddressRepository extends Repository
         }
     }
 
-    public function updateAddress($id, $address): Address
-    {
-        try {
-            $query = "UPDATE addresses SET streetName = :streetName, houseNumber = :houseNumber, postalCode = :postalCode, city = :city, country = :country WHERE addressId = :addressId";
-            $stmt = $this->connection->prepare($query);
-
-            $stmt->bindValue(":streetName", htmlspecialchars($address->getStreetName()));
-            $stmt->bindValue(":houseNumber", htmlspecialchars($address->getHouseNumber()));
-            $stmt->bindValue(":postalCode", htmlspecialchars($address->getPostalCode()));
-            $stmt->bindValue(":city", htmlspecialchars($address->getCity()));
-            $stmt->bindValue(":country", htmlspecialchars($address->getCountry()));
-            $stmt->bindValue(":addressId", htmlspecialchars($id));
-            
-            $stmt->execute();
-            $address->setAddressId($id);
-
-            return $address;
-        } catch (Exception $ex) {
-            throw ($ex);
-        }
-    }
-
-    public function deleteAddress($addressId): void
-    {
-        try {
-            $query = "DELETE FROM addresses WHERE addressId = :addressId";
-            $stmt = $this->connection->prepare($query);
-
-            $stmt->bindValue(":addressId", htmlspecialchars($addressId));
-            $stmt->execute();
-        } catch (Exception $ex) {
-            throw ($ex);
-        }
-    }
 }
