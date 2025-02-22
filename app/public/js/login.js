@@ -1,61 +1,76 @@
-//Fields
-const emailField = document.getElementById("email");
-const passwordField = document.getElementById("password");
+document.addEventListener("DOMContentLoaded", function () {
+    // Cache DOM elements
+    const emailField = document.getElementById("email");
+    const passwordField = document.getElementById("password");
+    const popup = document.getElementById("popup");
+    const loginButton = document.getElementById("loginButton");
+    const loginText = document.getElementById("loginText");
+    const loginSpinner = document.getElementById("loginSpinner");
 
-//Popup window
-var popup = document.getElementById("popup");
+    // Function to display messages in the popup
+    function displayMessage(message, type = "danger") {
+        // Set message and style
+        popup.textContent = message;
+        popup.className = `alert alert-${type}`; // Bootstrap alert classes
+        popup.style.display = "block";
 
-function attemptLogin(){
-
-    //Clear popups
-    popup.innerHTML = "";
-
-    //Check if all fields have input
-    if(!emailField.value || !passwordField.value){
-        displayError("Please fill in all fields.");
-        return;
+        // Hide the popup after 5 seconds
+        setTimeout(() => {
+            popup.style.display = "none";
+        }, 5000);
     }
 
-    //Create data object
-    const data = {
-        email: emailField.value,
-        password: passwordField.value
-    }
-    
-    //Try to verify login
-    fetch("/api/user/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data)
-        })
-    .then(response => response.json())
-    .then(data => {
-            if(data.error_message){
-                displayError(data.error_message);
-                return;
+    // Function to handle login
+    async function attemptLogin() {
+        // Check if all fields have input
+        if (!emailField.value || !passwordField.value) {
+            displayMessage("Please fill in all fields.", "danger");
+            return;
+        }
+
+        // Show spinner and disable button
+        loginText.textContent = "Logging in...";
+        loginSpinner.style.display = "inline-block";
+        loginButton.disabled = true;
+
+        // Create data object
+        const data = {
+            email: emailField.value,
+            password: passwordField.value
+        };
+
+        try {
+            // Try to verify login
+            const response = await fetch("/api/user/login", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data)
+            });
+
+            // Parse response
+            const result = await response.json();
+
+            // Handle response
+            if (result.error_message) {
+                displayMessage(result.error_message, "danger");
+            } else {
+                displayMessage(result.success_message, "success");
+                // Redirect on successful login
+                setTimeout(() => {
+                    window.location.assign("/");
+                }, 2000); // Redirect after 2 seconds
             }
-            displaySuccess(data.success_message);
-            window.location.assign("/");
-        })
-    .catch(error => {displayError(error)});
-}
+        } catch (error) {
+            console.error("Error:", error);
+            displayMessage("An error occurred. Please try again.", "danger");
+        } finally {
+            // Hide spinner and re-enable button
+            loginText.textContent = "Login";
+            loginSpinner.style.display = "none";
+            loginButton.disabled = false;
+        }
+    }
 
-function displayError(error){
-    errorDiv = document.createElement("div");
-    errorDiv.innerHTML = error;
-    errorDiv.classList.add("alert");
-    errorDiv.classList.add("alert-danger");
-    errorDiv.classList.add("p-3");
-    errorDiv.setAttribute("role", "alert");
-    popup.appendChild(errorDiv);
-}
-
-function displaySuccess(success){
-    successDiv = document.createElement("div");
-    successDiv.innerHTML = success;
-    successDiv.classList.add("alert");
-    successDiv.classList.add("alert-success");
-    successDiv.classList.add("p-3");
-    successDiv.setAttribute("role", "alert");
-    popup.appendChild(successDiv);
-}   
+    // Attach event listener to login button
+    loginButton.addEventListener("click", attemptLogin);
+});
