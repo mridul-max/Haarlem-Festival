@@ -18,10 +18,6 @@ class OrderAPIController extends APIController
     public function handleGetRequest($uri)
     {
         try {
-            if (!$this->isLoggedInAsAdmin() && !$this->isApiKeyValid()) {
-                $this->sendErrorMessage("Your API key is invalid, or you are not logged in as admin.", 401);
-                return;
-            }
             if (is_numeric(basename($uri))) {
                 $this->getOrderById(basename($uri));
                 return;
