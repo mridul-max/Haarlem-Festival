@@ -1,12 +1,12 @@
 <?php
 
+require_once('APIController.php');
 require_once(__DIR__ . '/../../models/Event.php');
 require_once(__DIR__ . '/../../models/Music/JazzEvent.php');
 require_once(__DIR__ . '/../../services/EventService.php');
 require_once(__DIR__ . '/../../services/EventTypeService.php');
 require_once(__DIR__ . '/../../services/TicketTypeService.php');
 require_once(__DIR__ . '/../../services/FestivalHistoryService.php');
-require_once('APIController.php');
 require_once(__DIR__ . '/../../models/Types/TicketType.php');
 require_once(__DIR__ . '/../../models/TicketLink.php');
 
@@ -40,7 +40,6 @@ class EventAPIController extends APIController
         $this->festivalHistoryservice = new FestivalHistoryService();
         $this->locationService = new LocationService();
 
-        // Load appropriate TicketLinkService.
         $request = $_SERVER['REQUEST_URI'];
         if (
             str_starts_with($request, EventAPIController::URI_JAZZ)
@@ -48,7 +47,6 @@ class EventAPIController extends APIController
             if (str_starts_with($request, EventAPIController::URI_JAZZ)) {
                 $this->ticketLinkService = new JazzTicketLinkService();
             }
-            // Music Services
             require_once(__DIR__ . '/../../services/ArtistService.php');
             $this->artistService = new ArtistService();
         } elseif (str_starts_with($request, EventAPIController::URI_STROLL)) {

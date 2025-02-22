@@ -61,49 +61,4 @@ class OrderController
             }
             require_once('../views/payment-funnel/order-history.php');
     }
-
-    public function getOrdersToExport()
-    {
-        try {
-            $orders = $this->orderService->getOrdersToExport(true);
-            require_once('../views/admin/viewOrders.php');
-
-            return $orders;
-        } catch (PDOException $e) {
-            echo $e->getMessage();
-        }
-    }
-
-    public function downloadOrders()
-    {
-        try {
-            return $this->orderService->downloadOrders();
-        } catch (PDOException $e) {
-            echo $e->getMessage();
-        }
-    }
-
-    public function sendTicketOfOrder()
-    {
-        if (session_status() == PHP_SESSION_NONE) {
-            session_start();
-        }
-        $customer = unserialize($_SESSION['user']);
-
-        $orders = $this->orderService->getOrderHistory($customer->getUserId());
-
-        $orderId = $_GET['orderId'];
-
-        $order = $this->orderService->getOrderById($orderId);
-
-        if ($orders == null) {
-            throw new Exception("No orders found");
-        }
-
-        $this->ticketService->getAllTicketsAndSend($order);
-
-        echo "<script>alert('Ticket has been sent to your email!')</script>";
-
-        require_once('../views/payment-funnel/order-history.php');
-    }
 }

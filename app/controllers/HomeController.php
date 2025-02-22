@@ -9,7 +9,6 @@ class HomeController
     const LOGIN_PAGE = "/../views/account/login.php";
     const REGISTER_PAGE = "/../views/account/register.php";
     
-    //load home 
     public function index(): void
     {
         require(__DIR__ . self::HOME_PAGE);
@@ -24,8 +23,6 @@ class HomeController
 
             if ($user->getUserType() == 3) {
                 require(__DIR__ . self::CUSTOMER_ACCOUNT_PAGE);
-            } else {
-                require(__DIR__ . self::EMPLOYEE_ACCOUNT_PAGE);
             }
         }
     }

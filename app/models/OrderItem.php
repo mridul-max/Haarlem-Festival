@@ -98,34 +98,25 @@ class OrderItem implements JsonSerializable
         $this->quantity = $quantity;
     }
 
-    //
-    //Calculated getters
-    //
-    //Get base price for one
     public function getBasePrice() : float
     {
         return round($this->fullTicketPrice / (1 + $this->vatPercentage), 2, PHP_ROUND_HALF_UP);
     }
-
-    //Get VAT amount for one
     public function getVatAmount() : float
     {
         return round($this->vatPercentage * $this->getBasePrice(), 2, PHP_ROUND_HALF_UP);
     }
 
-    //Base price excl VAT for one ticket multiplied by the quantity
     public function getTotalBasePrice(): float
     {
         return round($this->getBasePrice() * $this->quantity, 2, PHP_ROUND_HALF_UP);
     }
 
-    //VAT value that is multiplied by the quantity
     public function getTotalVatAmount(): float
     {
         return round($this->vatPercentage * $this->getTotalBasePrice(), 2, PHP_ROUND_HALF_UP);
     }
 
-    //Full price that is multiplied by the quantity
     public function getTotalFullPrice(): float
     {
         return $this->fullTicketPrice * $this->quantity;

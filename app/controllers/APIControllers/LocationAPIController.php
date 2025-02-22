@@ -33,11 +33,9 @@ class LocationAPIController extends APIController
     {
         try {
             if (str_starts_with($uri, "/api/locations/geocode")) {
-                // Request the geocode of a location
                 $this->getGeocode();
                 return;
             } elseif (str_starts_with($uri, "/api/locations/types")) {
-                // Request the all available location types
                 $this->getLocationTypes();
                 return;
             }
@@ -48,8 +46,6 @@ class LocationAPIController extends APIController
                 $this->getLocationsByType($uri, $sort);
                 return;
             }
-
-            // Request a specific location by its id
             if (is_numeric(basename($uri))) {
                 echo json_encode($this->locationService->getById(basename($uri)));
                 return;
@@ -94,136 +90,8 @@ class LocationAPIController extends APIController
     private function getLocationsByType($uri, $sort)
     {
         $base = basename($uri);
-        // remove stuff after "?"
         $base = explode("?", $base)[0];
         echo json_encode($this->locationService->getLocationsByType($base, $sort));
-    }
-
-    public function handlePostRequest($uri)
-    {
-        if (!$this->isLoggedInAsAdmin()) {
-            $this->sendErrorMessage('You are not logged in as admin.', 401);
-            return;
-        }
-
-        $data = json_decode(file_get_contents('php://input'), true);
-
-        if ($data == null) {
-            $this->sendErrorMessage("Invalid JSON", 400);
-            return;
-        }
-
-        try {
-            foreach ($this->requiredVariables as $key => $value) {
-                // Check if $data has the required key
-                if (!array_key_exists($key, $data) || $data[$key] == null || $data[$key] == "") {
-                    throw new MissingVariableException($value . " is required");
-                }
-
-                // If it is, set the value to the variable
-                $$key = $data[$key];
-            }
-
-
-            $location = $this->locationService->insertLocation(
-                $name,
-                $address['streetName'],
-                $address['houseNumber'],
-                $address['postalCode'],
-                $address['city'],
-                $address['country'],
-                $locationType,
-                $lon,
-                $lat,
-                $capacity
-            );
-
-            echo json_encode($location);
-        } catch (MissingVariableException $e) {
-            Logger::write($e);
-            $this->sendErrorMessage("Could not post new location: " . $e->getMessage(), 400);
-        }
-    }
-
-    public function handlePutRequest($uri)
-    {
-        if (!$this->isLoggedInAsAdmin()) {
-            $this->sendErrorMessage('You are not logged in as admin.', 401);
-            return;
-        }
-
-        if (!is_numeric(basename($uri))) {
-            $this->sendErrorMessage("Invalid ID", 400);
-            return;
-        }
-
-        $data = json_decode(file_get_contents('php://input'), true);
-
-        if ($data == null) {
-            $this->sendErrorMessage("Invalid JSON", 400);
-            return;
-        }
-
-        try {
-            foreach ($this->requiredVariables as $key => $value) {
-                // Check if $data has the required key
-                if (!array_key_exists($key, $data) || $data[$key] == null || $data[$key] == "") {
-                    throw new MissingVariableException($value . " is required");
-                }
-
-                // If it is, set the value to the variable
-                $$key = $data[$key];
-            }
-
-            // Posting also should have an addressId.
-            if (!isset($data['address']['addressId'])) {
-                throw new MissingVariableException("Address ID is required");
-            }
-
-
-            $addressId = $data['address']['addressId'];
-
-            $location = $this->locationService->updateLocation(
-                basename($uri),
-                $name,
-                $address['streetName'],
-                $address['houseNumber'],
-                $address['postalCode'],
-                $address['city'],
-                $address['country'],
-                $locationType,
-                $lon,
-                $lat,
-                $capacity,
-                $addressId
-            );
-
-            echo json_encode($location);
-        } catch (MissingVariableException $e) {
-            Logger::write($e);
-            $this->sendErrorMessage("Unable to edit location.", 400);
-        }
-    }
-
-    public function handleDeleteRequest($uri)
-    {
-        if (!$this->isLoggedInAsAdmin()) {
-            $this->sendErrorMessage('You are not logged in as admin.', 401);
-            return;
-        }
-
-        if (!is_numeric(basename($uri))) {
-            $this->sendErrorMessage("Invalid ID", 400);
-            return;
-        }
-
-        try {
-            $this->locationService->deleteLocation(basename($uri));
-            $this->sendSuccessMessage("Location deleted");
-        } catch (Exception $e) {
-            Logger::write($e);
-            $this->sendErrorMessage("Unable to delete location.", 400);
-        }
     }
 
     private function getLocationTypes()

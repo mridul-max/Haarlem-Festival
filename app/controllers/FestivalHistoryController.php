@@ -61,20 +61,4 @@ class FestivalHistoryController
         } catch (PDOException $e) {
         }
     }
-
-    public function updateEvent()
-    {
-        try {
-            $ticketLink = $this->ticketLinkService->getByEventId($_GET['id']);
-            $historyEvent = $ticketLink->getEvent();
-            $guides = $this->festivalHistoryService->getAllGuides();
-            $locations = $this->locationService->getAll();
-            $ticketTypes = $this->ticketTypeService->getAll();
-            require("../views/admin/History Management/updateEvent.php");
-
-            return $guides
-                && $locations && $ticketTypes && $historyEvent;
-        } catch (PDOException $e) {
-        }
-    }
 }

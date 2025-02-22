@@ -305,7 +305,6 @@ class JazzEventList extends EventsList {
         buttonDetails.classList.add('btn', 'btn-secondary', 'w-100');
         buttonDetails.innerText = 'About event';
         buttonDetailsA.appendChild(buttonDetails);
-        //rowButtons.appendChild(amountInput);
 
         rowButtons.appendChild(buttonDetailsA);
 

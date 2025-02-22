@@ -24,9 +24,6 @@ class CartAPIController extends APIController
             } else if ($uri == "/api/cart") {
                 $cartOrder = $this->cartService->getCart();
                 parent::sendResponse($cartOrder);
-            } else if ($uri == "/api/cart/checkpayment") {
-                $cartOrder = $this->cartService->checkIfPaid();
-                echo json_encode($cartOrder);
             } else
                 throw new Exception("Bad request.", 400);
         } catch (Throwable $e) {
