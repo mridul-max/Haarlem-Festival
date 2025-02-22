@@ -153,7 +153,7 @@ INSERT INTO `images` VALUES (10,'/img/jpg/bg.jpg','Ntjam Rosie');
 INSERT INTO `images` VALUES (11,'/img/jpg/763.jpg','Ntjam Rosie');
 INSERT INTO `images` VALUES (12,'/img/jpg/52958_Ntjam_Rosie_21293.jpg','Ntjam Rosie');
 INSERT INTO `images` VALUES (13,'/img/jpg/52958_Ntjam_Rosie_20954.jpg','Ntjam Rosie');
-INSERT INTO `images` VALUES (14,'/img/jpg/xxx830_650_0b3c7bb625295828f620e41c3c11858d.jpg','Gumbo Kings');
+INSERT INTO `images` VALUES (14,'/img/jpg/GumboKings.jpg','Gumbo Kings');
 INSERT INTO `images` VALUES (15,'/img/jpg/Gumbo-Kings.jpg','Gumbo Kings');
 INSERT INTO `images` VALUES (16,'/img/jpg/Nordanians-1.jpg','The Nordanians');
 INSERT INTO `images` VALUES (17,'/img/jpg/HaarlemGroteMarkt1.JPG','St. Bavo Church');
