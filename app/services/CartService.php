@@ -200,8 +200,13 @@ class CartService
      */
     public function getCartAfterLogin($customer): void
     {
+<<<<<<< Updated upstream
         //Fetch
         $customerOrder = $this->orderService->getCartOrderForCustomer($customer->getUserId());
+=======
+        
+        //$customerOrder = $this->orderService->getCartOrderForCustomer($customer->getUser Id());
+>>>>>>> Stashed changes
 
         //If there is no cart order saved for the customer,
         // but there is a cart in session,
@@ -220,16 +225,20 @@ class CartService
 
         //If there is already a cart in session and the logged-in user has another cart in db, we merge the carts
         if ($this->cartIsInitialised() && ($_SESSION["cartId"] != $customerOrder->getOrderId())) {
-
             $sessionOrder = $this->orderService->getOrderById($_SESSION["cartId"]);
             $mergedOrder = $this->orderService->mergeOrders($customerOrder, $sessionOrder);
 
             //Overwrite the session cart with the merged order.
             $_SESSION["cartId"] = $mergedOrder->getOrderId();
+        } else {
+            $_SESSION["cartId"] = $customerOrder->getOrderId ();
         }
+<<<<<<< Updated upstream
 
         //If not, then we store the saved customer cart into the session so they can pick up where they left off.
         $_SESSION["cartId"] = $customerOrder->getOrderId();
+=======
+>>>>>>> Stashed changes
     }
 
 
@@ -241,36 +250,97 @@ class CartService
      */
     private function checkValidCheckout(): Order
     {
+<<<<<<< Updated upstream
         //Cart must be initialised
         if (!$this->cartIsInitialised())
+=======
+        if (!$this->cartIsInitialised()) {
+>>>>>>> Stashed changes
             throw new CartException("Cart not initialised.");
+        }
 
         //Fetch order from db
         $cartOrder = $this->getCart();
 
+<<<<<<< Updated upstream
         //Order must not be paid already
         if ($cartOrder->getIsPaid())
             throw new CartException("Cart already paid.");
 
         //Order must not be empty
         if ($cartOrder->getOrderItems() == null)
+=======
+        if ($cartOrder->getOrderItems() == null || count($cartOrder->getOrderItems()) == 0) {
+>>>>>>> Stashed changes
             throw new CartException("Cart is empty.");
+        }
 
+<<<<<<< Updated upstream
         //A user must be logged in
         if (!isset($_SESSION["user"]))
+=======
+        if (!isset($_SESSION["user"])) {
+>>>>>>> Stashed changes
             throw new AuthenticationException("User not logged in.");
+        }
 
         //Fetch user from session
         $user = unserialize($_SESSION["user"]);
 
+<<<<<<< Updated upstream
         //The user must be a customer
         if (!$user instanceof Customer)
+=======
+        if (!$user instanceof Customer) {
+>>>>>>> Stashed changes
             throw new AuthenticationException("Only customers are allowed to check out.");
+        }
 
+<<<<<<< Updated upstream
         //The customer must be owner of the cart
         if ($user->getUserId() != $this->getCart()->getCustomer()->getUserId())
+=======
+        if ($user->getUserId() != $this->getCart()->getCustomer()->getUserId()) {
+>>>>>>> Stashed changes
             throw new AuthenticationException("Only the owner of the cart is authorised to checkout.");
+        }
 
         return $cartOrder;
+    }
+    public function checkoutCart(): Order
+    {
+        $cartOrder = $this->checkValidCheckout();
+        
+        // Create new paid order
+        $newOrder = new Order();
+        $newOrder->setOrderDate(new DateTime());
+        $newOrder->setIsPaid(true);
+        $newOrder->setCustomer($cartOrder->getCustomer());
+
+        // Clone cart items to new order
+        foreach ($cartOrder->getOrderItems() as $item) {
+            $orderItem = new OrderItem();
+            $orderItem->setTicketLinkId($item->getTicketLinkId());
+            $orderItem->setQuantity($item->getQuantity());
+            $newOrder->addOrderItem($orderItem);
+        }
+
+        // Persist the new order
+        $savedOrder = $this->orderService->createPersistedOrder($newOrder);
+        
+        // Clear cart
+        $this->orderService->deleteOrder($cartOrder->getOrderId());
+        $this->clearCart();
+
+        return $savedOrder;
+    }
+    
+    public function clearCart(): void
+    {
+        // Remove the cart ID from session
+        unset($_SESSION["cartId"]);
+    
+        // Optionally destroy the entire session if needed
+        // session_destroy(); // Uncomment if you want to clear the entire session
     }
 }

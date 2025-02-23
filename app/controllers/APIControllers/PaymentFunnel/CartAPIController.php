@@ -54,11 +54,17 @@ class CartAPIController extends APIController
                 parent::sendResponse($cartOrder);
                 return;
             }
+<<<<<<< Updated upstream
             ///api/cart/checkout POST method - checks out the cart
             else if (str_starts_with($uri, "/api/cart/checkout")) {
                 $paymentMethod = $this->getPaymentMethodFromPost();
                 $paymentUrl = $this->cartService->checkoutCart($paymentMethod);
                 echo json_encode(["paymentUrl" => $paymentUrl]);
+=======
+            else if (str_starts_with($uri, "/api/cart/checkout/")) {
+                $chkout = $this->cartService->checkoutCart();
+                parent::sendResponse($chkout);
+>>>>>>> Stashed changes
                 return;
             } else {
                 throw new Exception("Bad request.", 400);

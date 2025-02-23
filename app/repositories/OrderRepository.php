@@ -281,7 +281,7 @@ class OrderRepository extends Repository
     //Insert a new order into the database
     public function insertOrder($order): Order
     {
-        $sql = "INSERT INTO orders (orderDate, customerId, isPaid) VALUES (:orderDate, :customerId, 0)";
+        $sql = "INSERT INTO orders (orderDate, customerId, isPaid) VALUES (:orderDate, :customerId, :isPaid)";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindValue(":orderDate", htmlspecialchars($order->getOrderDateAsString()));
 
@@ -291,6 +291,8 @@ class OrderRepository extends Repository
         } else {
             $stmt->bindValue(":customerId", null);
         }
+        // Bind isPaid value from the order object
+        $stmt->bindValue(":isPaid", $order->getIsPaid() ? 1 : 0, PDO::PARAM_INT);
         $stmt->execute();
         $insertId = $this->connection->lastInsertId();
 
@@ -300,13 +302,15 @@ class OrderRepository extends Repository
         return $this->getOrderById($insertId);
     }
 
-    public function insertOrderItem($orderItem, $orderId): OrderItem
+    public function insertOrderItem(OrderItem $orderItem, int $orderId): OrderItem
     {
-        $sql = "INSERT INTO orderitems (ticketLinkId, orderId, quantity) VALUES (:ticketLinkId, :orderId, :quantity)";
+        $sql = "INSERT INTO orderitems (ticketLinkId, orderId, quantity) 
+                VALUES (:ticketLinkId, :orderId, :quantity)";
+        
         $stmt = $this->connection->prepare($sql);
-        $stmt->bindValue(":ticketLinkId", htmlspecialchars($orderItem->getTicketLinkId()));
-        $stmt->bindValue(":orderId", htmlspecialchars($orderId));
-        $stmt->bindValue(":quantity", htmlspecialchars($orderItem->getQuantity()));
+        $stmt->bindValue(":ticketLinkId", $orderItem->getTicketLinkId());
+        $stmt->bindValue(":orderId", $orderId);
+        $stmt->bindValue(":quantity", $orderItem->getQuantity());
         $stmt->execute();
 
         return $this->getOrderItemById($this->connection->lastInsertId());
@@ -318,6 +322,7 @@ class OrderRepository extends Repository
         $sql = "DELETE FROM orders WHERE orderId = :orderId";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindValue(":orderId", $orderId);
+        $stmt->execute(); // Added execute to perform the deletion
     }
 
     public function deleteOrderItem(int $orderItemId)

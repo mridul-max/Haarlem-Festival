@@ -101,7 +101,7 @@ class OrderService
         return $this->orderRepository->getCartOrderForCustomer($customerId);
     }
 
-    public function createOrder($ticketLinkId, $customerId = NULL): Order
+    public function createOrder($ticketLinkId, $customerId): Order
     {
         $order = new Order();
         $order->setOrderDate(new DateTime());
@@ -115,15 +115,6 @@ class OrderService
         //After we created the order, we can create the first orderItem that will be linked to the new order.
         $this->createOrderItem($ticketLinkId, $order->getOrderId());
         return $order;
-    }
-
-    public function createOrderItem(int $ticketLinkId, int $orderId): OrderItem
-    {
-        $orderItem = new OrderItem();
-        $orderItem->setTicketLinkId($ticketLinkId);
-        $orderItem->setQuantity(1);
-
-        return $this->orderRepository->insertOrderItem($orderItem, $orderId);
     }
 
     public function updateOrder(int $orderId, Order $order): Order
@@ -145,10 +136,24 @@ class OrderService
     {
         $this->orderRepository->deleteOrderItem($orderItemId);
     }
+    public function SaveOrder($order): void
+    {
+        $this->orderRepository->insertOrder($order);
+
+    }
+
+    public function createOrderItem(int $ticketLinkId, int $orderId, int $quantity = 1): OrderItem
+    {
+        $orderItem = new OrderItem();
+        $orderItem->setTicketLinkId($ticketLinkId);
+        $orderItem->setQuantity($quantity);
+        return $this->orderRepository->insertOrderItem($orderItem, $orderId);
+    }
 
     //If the customer has an unpaid order and logs in while having created another order as a visitor, merge the two orders.
     public function mergeOrders(Order $customerOrder, Order $sessionOrder): Order
     {
+<<<<<<< Updated upstream
         //Nested loop that checks if there are order items that represent the same ticket
         foreach ($customerOrder->getOrderItems() as $customerOrderItem) {
             foreach ($sessionOrder->getOrderItems() as $sessionOrderItem) {
@@ -161,13 +166,43 @@ class OrderService
                     //If the orderItem is unique then we add it to the customerOrder and update it
                     $this->orderRepository->updateOrderItem($sessionOrderItem->getOrderItemId(), $sessionOrderItem, $customerOrder->getOrderId());
                     $customerOrder->addOrderItem($sessionOrderItem);
+=======
+        foreach ($sessionOrder->getOrderItems() as $sessionItem) {
+            $exists = false;
+            foreach ($customerOrder->getOrderItems() as $customerItem) {
+                if ($customerItem->getTicketLinkId() === $sessionItem->getTicketLinkId()) {
+                    $customerItem->setQuantity($customerItem->getQuantity() + $sessionItem->getQuantity());
+                    $this->updateOrderItem($customerItem->getOrderItemId(), $customerItem);
+                    $exists = true;
+                    break;
+>>>>>>> Stashed changes
                 }
+            }
+            
+            if (!$exists) {
+                $clonedItem = clone $sessionItem;
+                $clonedItem->setOrderId($customerOrder->getOrderId());
+                $this->orderRepository->insertOrderItem($clonedItem, $customerOrder->getOrderId());
+                $customerOrder->addOrderItem($clonedItem);
             }
         }
 
         //Delete the sessionOrder from db
         $this->deleteOrder($sessionOrder->getOrderId());
-
         return $customerOrder;
+    }
+    public function createPersistedOrder(Order $order): Order
+    {
+        $persistedOrder = $this->orderRepository->insertOrder($order);
+        
+        foreach ($order->getOrderItems() as $item) {
+            $this->createOrderItem(
+                $item->getTicketLinkId(),
+                $persistedOrder->getOrderId(),
+                $item->getQuantity()
+            );
+        }
+        
+        return $persistedOrder;
     }
 }

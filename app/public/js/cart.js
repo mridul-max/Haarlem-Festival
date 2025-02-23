@@ -163,6 +163,7 @@ function createToast(header, msg) {
     Cart.Checkout = function (paymentMethod) {
         console.log(paymentMethod);
         return new Promise((resolve, reject) => {
+<<<<<<< Updated upstream
             fetch(apiUrl + '/checkout',
                 {
                     method: 'POST',
@@ -170,6 +171,9 @@ function createToast(header, msg) {
                         "paymentMethod": paymentMethod
                     }),
                 }).then(response => response.json())
+=======
+            fetch(apiUrl + '/checkout/').then(response => response.json())
+>>>>>>> Stashed changes
                 .then(data => {
                     Cart.UpdateCounter();
                     resolve(data);
