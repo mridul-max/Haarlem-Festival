@@ -1,187 +1,168 @@
 <?php
-
+require_once(__DIR__ . '/../repositories/CartRepository.php');
 require_once(__DIR__ . '/../models/Exceptions/EventSoldOutException.php');
 require_once(__DIR__ . '/../models/Exceptions/CartException.php');
 require_once(__DIR__ . '/../models/Exceptions/AuthenticationException.php');
-require_once('OrderService.php');
-require_once('CustomerService.php');
+require_once(__DIR__ . '/OrderService.php');
+require_once(__DIR__ . '/CustomerService.php');
 
-class CartService
-{
+class CartService {
+    private $cartRepository;
     private $orderService;
     private $customerService;
 
-    public function __construct()
-    {
+    public function __construct() {
+        $this->cartRepository = new CartRepository();
         $this->orderService = new OrderService();
         $this->customerService = new CustomerService();
     }
 
-    private function cartIsInitialised(): bool
-    {
+    private function getAuthenticatedCustomer(): Customer {
         if (session_status() == PHP_SESSION_NONE) {
             session_start();
         }
-
-        return (isset($_SESSION["cartId"]));
-    }
-
-    private function initialiseCart($ticketLinkId): Order
-    {
-        if ($this->cartIsInitialised()) {
-            throw new CartException("Cart is already initialised.");
-        }
-
-        if (isset($_SESSION["user"])) {
-            $user = unserialize($_SESSION["user"]);
-
-            if ($user->getUserTypeAsString() == "Customer") {
-                $customerId = $user->getUserId();
-            } else {
-                throw new Exception("User is not a customer.");
-            }
-
-            $order = $this->orderService->createOrder($ticketLinkId, $customerId);
-            $realUser = $this->customerService->getCustomerById($customerId);
-            $order->setCustomer($realUser);
-        } else
-            $order = $this->orderService->createOrder($ticketLinkId);
-
-        $_SESSION["cartId"] = $order->getOrderId();
-        return $order;
-    }
-
- 
-    public function getCart(): Order
-    {
-        if (!$this->cartIsInitialised()) {
-            throw new CartException("Cart is not initialised.");
-        }
-
-        $orderId = $_SESSION["cartId"];
-        return $this->orderService->getOrderById($orderId);
-    }
-
-    public function getCount(): int
-    {
-        if (!$this->cartIsInitialised()) {
-            return 0;
-        } else {
-            $orderId = $_SESSION["cartId"];
-            $order = $this->orderService->getOrderById($orderId);
-            return $order->getTotalItemCount();
-        }
-    }
-
-    public function getCartByOrderId($orderId): Order
-    {
-        return $this->orderService->getOrderById($orderId);
-    }
-
-    public function addItem($ticketLinkId): Order
-    {
-        if (session_status() == PHP_SESSION_NONE) {
-            session_start();
-        }
-        if (!isset($_SESSION["cartId"])) {
-            return $this->initialiseCart($ticketLinkId);
-        } else {
-            $order = $this->orderService->getOrderById($_SESSION["cartId"]);
-
-            foreach ($order->getOrderItems() as $orderItem) {
-                if ($orderItem->getTicketLinkId() == $ticketLinkId) {
-                    $orderItem->setQuantity($orderItem->getQuantity() + 1);
-                    $this->orderService->updateOrderItem($orderItem->getOrderItemId(), $orderItem);
-                    return $order;
-                }
-            }
-            $orderItem = $this->orderService->createOrderItem($ticketLinkId, $order->getOrderId());
-            $order->addOrderItem($orderItem);
-        }
-        return $order;
-    }
-
-    public function removeItem($ticketLinkId): Order
-    {
-        $order = $this->getCart();
-
-        foreach ($order->getOrderItems() as $orderItem) {
-            if ($orderItem->getTicketLinkId() == $ticketLinkId) {
-                $orderItem->setQuantity($orderItem->getQuantity() - 1);
-
-                if ($orderItem->getQuantity() == 0) {
-                    $this->orderService->deleteOrderItem($orderItem->getOrderItemId());
-                    $order->removeOrderItem($orderItem);
-                } else {
-                    $this->orderService->updateOrderItem($orderItem->getOrderItemId(), $orderItem);
-                }
-            }
-        }
-        return $order;
-    }
-
-    public function deleteWholeItem($ticketLinkId): Order
-    {
-        $order = $this->getCart();
-
-        foreach ($order->getOrderItems() as $orderItem) {
-            if ($orderItem->getTicketLinkId() == $ticketLinkId) {
-                $this->orderService->deleteOrderItem($orderItem->getOrderItemId());
-                $order->removeOrderItem($orderItem);
-                return $order;
-            }
-        }
-        throw new ObjectNotFoundException("Specified item not found.");
-    }
-
-
-    public function getCartAfterLogin($customer): void
-    {
-        $customerOrder = $this->orderService->getCartOrderForCustomer($customer->getUserId());
-
-        if (!$customerOrder && $this->cartIsInitialised()) {
-            $order = $this->getCart();
-            $order->setCustomer($customer);
-            $this->orderService->updateOrder($order->getOrderId(), $order);
-            return;
-        }
-
-        if (!$customerOrder && !$this->cartIsInitialised()) {
-            return;
-        }
-
-        if ($this->cartIsInitialised() && ($_SESSION["cartId"] != $customerOrder->getOrderId())) {
-
-            $sessionOrder = $this->orderService->getOrderById($_SESSION["cartId"]);
-            $mergedOrder = $this->orderService->mergeOrders($customerOrder, $sessionOrder);
-            $_SESSION["cartId"] = $mergedOrder->getOrderId();
-        }
-
-        $_SESSION["cartId"] = $customerOrder->getOrderId();
-    }
-
-
-    private function checkValidCheckout(): Order
-    {
-        if (!$this->cartIsInitialised())
-            throw new CartException("Cart not initialised.");
-
-        $cartOrder = $this->getCart();
-
-        if ($cartOrder->getOrderItems() == null)
-            throw new CartException("Cart is empty.");
-
-        if (!isset($_SESSION["user"]))
+        
+        if (!isset($_SESSION["user"])) {
             throw new AuthenticationException("User not logged in.");
-
+        }
+        
         $user = unserialize($_SESSION["user"]);
+        if (!$user instanceof Customer) {
+            throw new AuthenticationException("Invalid user type.");
+        }
+        return $user;
+    }
 
-        if (!$user instanceof Customer)
-            throw new AuthenticationException("Only customers are allowed to check out.");
+    public function getCart(): array {
+        try {
+            $customer = $this->getAuthenticatedCustomer();
+            $cart = $this->cartRepository->findCartByCustomerId($customer->getUserId());
+            
+            if (!$cart) {
+                return [];
+            }
+            
+            return array_map(function($item) {
+                return [
+                    'ticketLinkId' => $item->getTicketLinkId(),
+                    'quantity' => $item->getQuantity()
+                ];
+            }, $cart->getCartItems());
+        } catch (AuthenticationException $e) {
+            return [];
+        }
+    }
 
-        if ($user->getUserId() != $this->getCart()->getCustomer()->getUserId())
-            throw new AuthenticationException("Only the owner of the cart is authorised to checkout.");
+    public function getCount(): int {
+        try {
+            $customer = $this->getAuthenticatedCustomer();
+            $cart = $this->cartRepository->findCartByCustomerId($customer->getUserId());
+            return $cart ? $cart->getTotalQuantity() : 0;
+        } catch (AuthenticationException $e) {
+            return 0;
+        } catch (Exception $e) {
+            // Log the error if you have logging configured
+            // error_log($e->getMessage());
+            return 0;  // Return 0 for any unexpected errors
+        }
+    }
 
-        return $cartOrder;
+    public function addItem($ticketLinkId): void {
+        $customer = $this->getAuthenticatedCustomer();
+        $cart = $this->cartRepository->findCartByCustomerId($customer->getUserId()) ?? new Cart($customer->getUserId());
+        
+        // Add or update item
+        $existingItem = null;
+        foreach ($cart->getCartItems() as $item) {
+            if ($item->getTicketLinkId() == $ticketLinkId) {
+                $existingItem = $item;
+                break;
+            }
+        }
+        
+        if ($existingItem) {
+            $existingItem->setQuantity($existingItem->getQuantity() + 1);
+        } else {
+            $cart->addItem(new CartItem($ticketLinkId, 1, $cart->getCartId()));
+        }
+        
+        $this->cartRepository->saveCart($cart);
+    }
+
+    public function removeItem($ticketLinkId): void {
+        $customer = $this->getAuthenticatedCustomer();
+        $cart = $this->cartRepository->findCartByCustomerId($customer->getUserId());
+        
+        if ($cart) {
+            foreach ($cart->getCartItems() as $item) {
+                if ($item->getTicketLinkId() == $ticketLinkId) {
+                    $newQty = $item->getQuantity() - 1;
+                    if ($newQty > 0) {
+                        $item->setQuantity($newQty);
+                    } else {
+                        $cart->removeItem($item->getCartItemId());
+                    }
+                    break;
+                }
+            }
+            $this->cartRepository->saveCart($cart);
+        }
+    }
+
+    public function deleteWholeItem($ticketLinkId): void {
+        $customer = $this->getAuthenticatedCustomer();
+        $cart = $this->cartRepository->findCartByCustomerId($customer->getUserId());
+        
+        if ($cart) {
+            foreach ($cart->getCartItems() as $item) {
+                if ($item->getTicketLinkId() == $ticketLinkId) {
+                    $cart->removeItem($item->getCartItemId());
+                    break;
+                }
+            }
+            $this->cartRepository->saveCart($cart);
+        }
+    }
+
+    public function checkoutCart(): Order {
+        $customer = $this->getAuthenticatedCustomer();
+        $cart = $this->cartRepository->findCartByCustomerId($customer->getUserId());
+        
+        if (!$cart || count($cart->getCartItems()) === 0) {
+            throw new CartException("Cart is empty.");
+        }
+        
+        try {
+            $this->cartRepository->beginTransaction();
+            
+            // Create order through OrderService
+            $order = $this->orderService->createOrder($customer->getUserId());
+            
+            // Add items through OrderService
+            foreach ($cart->getCartItems() as $cartItem) {
+                $this->orderService->createOrderItem(
+                    $cartItem->getTicketLinkId(),
+                    $order->getOrderId(),
+                    $cartItem->getQuantity()
+                );
+            }
+            
+            // Clear cart after successful checkout
+            $this->cartRepository->deleteCart($cart->getCartId());
+            
+            $this->cartRepository->commit();
+            return $order;
+        } catch (Exception $e) {
+            $this->cartRepository->rollBack();
+            throw $e;
+        }
+    }
+
+    public function clearCart(): void {
+        $customer = $this->getAuthenticatedCustomer();
+        $cart = $this->cartRepository->findCartByCustomerId($customer->getUserId());
+        if ($cart) {
+            $this->cartRepository->deleteCart($cart->getCartId());
+        }
     }
 }

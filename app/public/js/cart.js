@@ -1,5 +1,3 @@
-// Author: Konrad
-// An universal method of adding a new item to the cart.
 //
 // METHODS:
 // Cart.Add(itemID) - adds one item to the cart
@@ -52,10 +50,7 @@ function createToast(header, msg) {
     var Cart = {};
 
     //Adds one item to the cart order
-    Cart.Add = function (itemID) {
-        document.getElementById('shopping-circle').classList.remove('d-none');
-        document.getElementById('shopping-circle-text').innerHTML = this.count;
-
+    Cart.Add = function(itemID) {
         const url = apiUrl + "/add/" + itemID;
         return new Promise((resolve, reject) => {
             fetch(url, {
@@ -63,20 +58,22 @@ function createToast(header, msg) {
                 headers: {
                     'Content-Type': 'application/json'
                 }
-            }).then(response => response.json())
-                .then(data => {
-                    if (data.error_message) {
-                        createToast('Error', data.error_message);
-                    }
-
-                    Cart.UpdateCounter();
-                    resolve(data);
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.text().then(text => { throw new Error(text) });
                 }
-                )
-                .catch(error => {
-                    reject(error);
-                }
-                );
+                return response.json();
+            })
+            .then(data => {
+                Cart.UpdateCounter();
+                resolve(data);
+            })
+            .catch(error => {
+                console.error('Add item error:', error);
+                createToast('Error', error.message);
+                reject(error);
+            });
         });
     };
     //Removes one item from the cart order
@@ -122,33 +119,39 @@ function createToast(header, msg) {
         });
     }
 
-    Cart.UpdateCounter = function () {
-        fetch(apiUrl + '/count',
-            {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
+    Cart.UpdateCounter = function() {
+        fetch(apiUrl + '/count', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
             }
-        ).then(response => response.json())
-            .then(data => {
-                const cartCircle = document.querySelector('#shopping-circle');
-                const cartCircleText = document.querySelector('#shopping-circle-text');
-                if (data.count > 0) {
-                    cartCircle.classList.remove('d-none');
-                }
-                else {
-                    cartCircle.classList.add('d-none');
-                }
-                cartCircleText.innerHTML = data.count;
-
-                this.count = data.count;
-            })
-            .catch(error => {
-                console.log(error);
+        })
+        .then(response => {
+            if (!response.ok) {
+                // Handle non-JSON error responses
+                return response.text().then(text => {
+                    throw new Error(`HTTP ${response.status}: ${text}`);
+                });
             }
-            );
-    }
+            return response.json();
+        })
+        .then(data => {
+            const cartCircle = document.querySelector('#shopping-circle');
+            const cartCircleText = document.querySelector('#shopping-circle-text');
+            
+            if (data.count > 0) {
+                cartCircle.classList.remove('d-none');
+            } else {
+                cartCircle.classList.add('d-none');
+            }
+            cartCircleText.textContent = data.count;
+            this.count = data.count;
+        })
+        .catch(error => {
+            console.error('Cart count error:', error);
+            createToast('Cart Error', error.message);
+        });
+    };
 
     Cart.Delete = function (itemId) {
         return new Promise((resolve, reject) => {
@@ -167,19 +170,32 @@ function createToast(header, msg) {
         });
     }
 
-    Cart.Checkout = function () {
+    Cart.Checkout = function() {
         return new Promise((resolve, reject) => {
-            fetch(apiUrl + '/checkout').then(response => response.json())
-                .then(data => {
-                    Cart.UpdateCounter();
-                    resolve(data);
+            fetch(apiUrl + '/checkout', {
+                method: 'POST', // Explicitly set to POST
+                headers: {
+                    'Content-Type': 'application/json'
                 }
-                ).catch(error => {
-                    reject(error);
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.text().then(text => { throw new Error(text) });
                 }
-                );
+                return response.json();
+            })
+            .then(data => {
+                Cart.UpdateCounter();
+                resolve(data);
+            })
+            .catch(error => {
+                console.error('Checkout error:', error);
+                createToast('Checkout Failed', error.message);
+                reject(error);
+            });
         });
-    }
+    };
+
 
     window.Cart = Cart;
     console.log('Cart.js loaded.');

@@ -53,28 +53,33 @@ class OrderService
         return $this->orderRepository->getCartOrderForCustomer($customerId);
     }
 
-    public function createOrder($ticketLinkId, $customerId = NULL): Order
-    {
+    public function createOrder(?int $customerId = null): Order {
         $order = new Order();
         $order->setOrderDate(new DateTime());
-        $order->setIsPaid(false);
-
-        if (isset($customerId))
+        $order->setIsPaid(false); // Mark as unpaid until payment completes
+        
+        if ($customerId) {
             $order->setCustomer($this->customerRepository->getById($customerId));
-
-        $order = $this->orderRepository->insertOrder($order);
-
-        //After we created the order, we can create the first orderItem that will be linked to the new order.
-        $this->createOrderItem($ticketLinkId, $order->getOrderId());
-        return $order;
+        }
+        
+        return $this->orderRepository->insertOrder($order);
     }
 
-    public function createOrderItem(int $ticketLinkId, int $orderId): OrderItem
-    {
+    public function createOrderItem(int $ticketLinkId, int $orderId, int $quantity): OrderItem {
+        // Verify ticket availability first
+        $available = $this->ticketLinkService->getAvailableTickets($ticketLinkId);
+        if ($available < $quantity) {
+            throw new EventSoldOutException("Not enough tickets available.");
+        }
+        
+        // Create order item
         $orderItem = new OrderItem();
         $orderItem->setTicketLinkId($ticketLinkId);
-        $orderItem->setQuantity(1);
-
+        $orderItem->setQuantity($quantity);
+        
+        // Decrease availability
+        $this->ticketLinkService->decreaseAvailableTickets($ticketLinkId, $quantity);
+        
         return $this->orderRepository->insertOrderItem($orderItem, $orderId);
     }
 

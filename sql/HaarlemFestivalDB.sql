@@ -736,6 +736,30 @@ CREATE TABLE `orderitems` (
   CONSTRAINT `orderitems_FK` FOREIGN KEY (`orderId`) REFERENCES `orders` (`orderId`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `orderitems_FK_1` FOREIGN KEY (`ticketLinkId`) REFERENCES `ticketlinks` (`ticketLinkId`) ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=241 DEFAULT CHARSET=utf8;
+-- Create carts table to store temporary carts
+DROP TABLE IF EXISTS `carts`;
+CREATE TABLE `carts` (
+  `cartId` int(11) NOT NULL AUTO_INCREMENT,
+  `customerId` int(11) NOT NULL,
+  `createdDate` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`cartId`),
+  KEY `carts_FK` (`customerId`),
+  CONSTRAINT `carts_FK` FOREIGN KEY (`customerId`) REFERENCES `customers` (`userId`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- Create cartitems table to store items in carts
+DROP TABLE IF EXISTS `cartitems`;
+CREATE TABLE `cartitems` (
+  `cartItemId` int(11) NOT NULL AUTO_INCREMENT,
+  `ticketLinkId` int(11) NOT NULL,
+  `quantity` int(11) NOT NULL,
+  `cartId` int(11) NOT NULL,
+  PRIMARY KEY (`cartItemId`),
+  KEY `cartitems_FK` (`cartId`),
+  KEY `cartitems_FK_1` (`ticketLinkId`),
+  CONSTRAINT `cartitems_FK` FOREIGN KEY (`cartId`) REFERENCES `carts` (`cartId`) ON DELETE CASCADE,
+  CONSTRAINT `cartitems_FK_1` FOREIGN KEY (`ticketLinkId`) REFERENCES `ticketlinks` (`ticketLinkId`) ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `resettokens`;
 CREATE TABLE `resettokens` (

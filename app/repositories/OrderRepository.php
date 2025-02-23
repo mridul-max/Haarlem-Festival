@@ -236,7 +236,6 @@ class OrderRepository extends Repository
         $stmt = $this->connection->prepare($sql);
         $stmt->bindValue(":orderId", $orderId);
     }
-
     public function deleteOrderItem(int $orderItemId)
     {
         $sql = "DELETE FROM orderitems WHERE orderItemId = :orderItemId";
