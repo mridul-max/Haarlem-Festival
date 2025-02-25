@@ -651,6 +651,11 @@ INSERT INTO `ticketlinks` (`ticketLinkId`, `ticketTypeId`, `eventId`) VALUES
 (5, 4, 1),   -- Gumbo Kings (Main Hall)
 (6, 4, 7),   -- Ntjam Rosie (Main Hall)
 (7, 6, 8),   -- Gumbo Kings (Grote Markt)
+(8,7,14),
+(9,7,15),
+(10,7,16),
+(11,7,17),
+(12,8,18),
 (13, 4, 19), -- Gare du Nord (Main Hall)
 (14, 6, 20), -- Gare du Nord (Grote Markt)
 (15, 9, 21), -- The Nordanians (Third Hall)

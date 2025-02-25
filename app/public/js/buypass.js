@@ -62,7 +62,7 @@ load();
 
 async function loadPassTypes() {
     passType.innerHTML = '';
-    passType.innerHTML += `<option value="0" disabled>===Select Pass Type===</option>`;
+    passType.innerHTML += `<option value="0" disabled>Select Pass Type</option>`;
     passType.value = 0;
     passType.disabled = true;
 
