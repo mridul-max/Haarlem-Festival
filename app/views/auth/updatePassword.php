@@ -37,7 +37,6 @@
         <button type="submit" class="btn btn-primary" name="resetPasswordButton"
           onclick="updatePassword()">Submit</button>
       </div>
-    <!-- </form> -->
   </div>
 
 

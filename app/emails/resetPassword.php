@@ -56,7 +56,7 @@
 <body>
     <div class="container">
         <h1>Reset Your Password</h1>
-        <p>Hello <?= $user->getFirstName() ?>,</p>
+        <p>Dear <?= $user->getFirstName() ?>,</p>
         <p>If you did request a password reset, please click the link below to reset your password. This link will expire in 24 hours, so please act promptly.</p>
     </div>
     <div class="container" style="margin-top: 20px;">

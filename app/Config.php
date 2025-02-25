@@ -5,4 +5,5 @@ if ($debugMode) {
     $db_name = "developmentdb";
     $db_username = "developer";
     $db_password = "secret123";
+    $hostname = 'http://localhost';
 }

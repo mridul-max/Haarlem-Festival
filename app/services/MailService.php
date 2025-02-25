@@ -5,8 +5,6 @@ use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
 
 require_once(__DIR__ . '/../models/Customer.php');
-require_once(__DIR__ . '/../models/Ticket/Ticket.php');
-require_once(__DIR__ . '/../models/Order.php');
 require_once(__DIR__ . '/../services/UserService.php');
 
 use Dompdf\Dompdf;
@@ -16,25 +14,24 @@ class MailService
 
     private $mailer;
     const CUSTOMER_CHANGES_EMAIL = __DIR__ . "/../emails/customer-changes-email.php";
-    const TICKET_EMAIL = __DIR__ . "/../emails/ticket-email.php";
-    const INVOICE_EMAIL = __DIR__ . "/../emails/invoice-email.php";
     const PASSWORD_RESET_EMAIL = __DIR__ . "/../emails/resetPassword.php";
 
 
     function __construct()
     {
-        $this->mailer = new PHPMailer();
+        $this->mailer = new PHPMailer(true);
         $this->mailer->isSMTP();
         $this->mailer->isHTML(true);
         $this->mailer->Host = 'sandbox.smtp.mailtrap.io';
         $this->mailer->SMTPAuth = true;
-        // SSL/TLS
-        $this->mailer->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
+        $this->mailer->AuthType = 'PLAIN';
+        $this->mailer->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
         $this->mailer->Port = 2525;
-        $this->mailer->Username = "1a5dfcc801fdf2";
-        $this->mailer->Password = '6eeb4e609b3156';
+        //$this->mailer->SMTPDebug = SMTP::DEBUG_SERVER;
+        $this->mailer->Username = '4865a525b5ef97';
+        $this->mailer->Password = '4bcb6bc69ec0f6';
    
-        $this->mailer->setFrom('mahedimridul57@gmail.com', 'Mahedi');
+        $this->mailer->setFrom('mahedimridul57@gmail.com','Mahedi Mridul');
 
     }
 
