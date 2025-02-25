@@ -50,7 +50,6 @@ class CartService
         $_SESSION["cartId"] = $order->getOrderId();
         return $order;
     }
-
  
     public function getCart(): Order
     {
@@ -163,6 +162,17 @@ class CartService
 
     private function checkValidCheckout(): Order
     {
+        if (!isset($_SESSION["user"]))
+        throw new AuthenticationException("User not logged in.");
+
+         $user = unserialize($_SESSION["user"]);
+
+        if (!$user instanceof Customer)
+            throw new AuthenticationException("Only customers are allowed to check out.");
+
+        if ($user->getUserId() != $this->getCart()->getCustomer()->getUserId())
+            throw new AuthenticationException("Only the owner of the cart is authorised to checkout.");
+
         if (!$this->cartIsInitialised())
             throw new CartException("Cart not initialised.");
 
@@ -171,17 +181,22 @@ class CartService
         if ($cartOrder->getOrderItems() == null)
             throw new CartException("Cart is empty.");
 
-        if (!isset($_SESSION["user"]))
-            throw new AuthenticationException("User not logged in.");
-
-        $user = unserialize($_SESSION["user"]);
-
-        if (!$user instanceof Customer)
-            throw new AuthenticationException("Only customers are allowed to check out.");
-
-        if ($user->getUserId() != $this->getCart()->getCustomer()->getUserId())
-            throw new AuthenticationException("Only the owner of the cart is authorised to checkout.");
-
         return $cartOrder;
     }
+    
+    public function clearCart(): void
+{
+    if (session_status() == PHP_SESSION_NONE) {
+        session_start();
+    }
+    if (isset($_SESSION["cartId"])) {
+        $order = $this->orderService->getOrderById($_SESSION["cartId"]);
+        foreach ($order->getOrderItems() as $orderItem) {
+            $this->orderService->deleteOrderItem($orderItem->getOrderItemId());
+        }
+        $order->setOrderItems([]);
+        $this->orderService->updateOrder($order->getOrderId(), $order);
+        unset($_SESSION["cartId"]);
+    }
+}
 }

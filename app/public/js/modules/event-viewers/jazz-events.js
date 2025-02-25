@@ -240,9 +240,15 @@ class JazzEventList extends EventsList {
 
     async loadEvents() {
         let data = await this.getData();
-        for (let event of data) {
+
+        this.clearEvents();
+        if (data.length == 0) {
+            this.noEvents();
+        } else {
+            for (let event of data) {
                 this.addEvent(event);
             }
+        }
     }
 
     addEvent(event) {

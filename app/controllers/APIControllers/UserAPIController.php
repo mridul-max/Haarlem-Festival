@@ -93,7 +93,6 @@ class UserAPIController extends APIController
 
             $user = $this->userService->verifyUser($data);
 
-            //Store user in session
             if (session_status() == PHP_SESSION_NONE) {
                 session_start();
             }
@@ -140,7 +139,6 @@ class UserAPIController extends APIController
                 throw new MissingVariableException("Registration data incomplete.");
             }
 
-            //Verify captcha
             $response = $data->captchaResponse;
             $verifyResponse = file_get_contents('https://www.google.com/recaptcha/api/siteverify?secret=' . self::CAPTCHA_SECRET . '&response=' . $response);
             $responseData = json_decode($verifyResponse, true);
@@ -149,7 +147,6 @@ class UserAPIController extends APIController
                 throw new Exception("Captcha verification failed.");
             }
 
-            //Create customer object from data
             $customer = new Customer();
             $customer->setFirstName($data->firstName);
             $customer->setLastName($data->lastName);
@@ -196,8 +193,6 @@ class UserAPIController extends APIController
             $emailService = new MailService();
             $emailService->sendResetTokenToUser($data->email, $reset_token, $user);
             parent::sendSuccessMessage("Email sent, please check your inbox.");
-
-            // Log the response being sent back to the client
             error_log(json_encode(['success' => true]));
         } catch (Throwable $ex) {
             Logger::write($ex);
@@ -224,7 +219,6 @@ class UserAPIController extends APIController
             parent::sendErrorMessage($ex->getMessage());
         }
     }
-
 
     private function updateCustomer($data)
     {

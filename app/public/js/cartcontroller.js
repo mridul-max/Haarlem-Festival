@@ -78,7 +78,13 @@ async function shareMyCart() {
 
 function checkout() {
     Cart.Checkout()
-    showOrderHistory();
+        .then(() => {
+            Cart.Clear();
+            showOrderHistory();
+        })
+        .catch(error => {
+            showErrorPopup(error.message);
+        });
 }
 
 function showOrderHistory() {
