@@ -26,16 +26,16 @@ class MailService
         $this->mailer = new PHPMailer();
         $this->mailer->isSMTP();
         $this->mailer->isHTML(true);
-        $this->mailer->Host = 'haarlem.kfigura.nl';
+        $this->mailer->Host = 'sandbox.smtp.mailtrap.io';
         $this->mailer->SMTPAuth = true;
         // SSL/TLS
         $this->mailer->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
-        $this->mailer->Port = 465;
-        $this->mailer->Username = "team@haarlem.kfigura.nl";
-        $this->mailer->Password = 'teampassword';
+        $this->mailer->Port = 2525;
+        $this->mailer->Username = "1a5dfcc801fdf2";
+        $this->mailer->Password = '6eeb4e609b3156';
+   
+        $this->mailer->setFrom('mahedimridul57@gmail.com', 'Mahedi');
 
-
-        $this->mailer->setFrom('team@haarlem.kfigura.nl', 'The Festival Team');
     }
 
     public function sendResetTokenToUser($email, $reset_token, $user)
@@ -58,60 +58,6 @@ class MailService
         }
     }
 
-    public function sendInvoiceByEmail(Dompdf $dompdf, Order $order)
-    {
-        try {
-            $pdfContents = $dompdf->output();
-
-            $recipentEmail = $order->getCustomer()->getEmail();
-            $name = $order->getCustomer()->getFullName();
-
-            $this->mailer->Subject = 'Your Invoice for the The Festival';
-
-            ob_start();
-            require_once(self::INVOICE_EMAIL);
-            $this->mailer->Body = ob_get_clean();
-
-            $this->mailer->addAddress($recipentEmail, $name);
-            $this->mailer->addStringAttachment($pdfContents, 'invoice.pdf', 'base64', 'application/pdf');
-
-            if (!$this->mailer->send()) {
-                throw new Exception("Email with invoice could not be sent");
-            }
-        } catch (Throwable $ex) {
-            Logger::write($ex);
-            throw ($ex);
-        }
-    }
-
-    public function sendTicketByEmail(Dompdf $dompdf, Order $order)
-    {
-        try {
-            $this->mailer->Subject = 'Your Ticket for the The Festival';
-
-            $recipentEmail = $order->getCustomer()->getEmail();
-            $name = $order->getCustomer()->getFullName();
-
-            ob_start();
-            require_once(self::TICKET_EMAIL);
-            $this->mailer->Body = ob_get_clean();
-
-            $this->mailer->addAddress($recipentEmail, $name);
-            // add pdf to email for each ticket
-            foreach ($order->getTickets() as $ticket) {
-                $pdfContents = $dompdf->output();
-                $this->mailer->addStringAttachment($pdfContents, 'ticket.pdf', 'base64', 'application/pdf');
-            }
-
-            if (!$this->mailer->send()) {
-                // Get reason.
-                throw new Exception("Email with tickets could not be sent");
-            }
-        } catch (Throwable $ex) {
-            Logger::write($ex);
-            throw ($ex);
-        }
-    }
 
     public function sendAccountUpdateEmail($customer)
     {

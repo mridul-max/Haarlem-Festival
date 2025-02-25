@@ -56,16 +56,14 @@
 <body>
     <div class="container">
         <h1>Reset Your Password</h1>
-        <p>Dear <?= $user->getFirstName() ?>,</p>
-        <p>We received a request to reset your password for The Festival website. If you did not initiate this request, please disregard this message.</p>
+        <p>Hello <?= $user->getFirstName() ?>,</p>
         <p>If you did request a password reset, please click the link below to reset your password. This link will expire in 24 hours, so please act promptly.</p>
     </div>
     <div class="container" style="margin-top: 20px;">
-        <p>For security reasons, please do not share this link with anyone else. If you have any questions or concerns, please contact our support team at <span class="email">g</span></p>
         <a href="<?= $hostname ?>/updatePassword?token=<?= $reset_token ?>&email=<?= $email ?>" class="button">Reset Your Password</a>
     </div>
     <div class="container" style="margin-top: 20px;">
-        <p>Thank you,<br>The Festival Team</p>
+        <p>Thank you,<br>Mahedi & Tanzeel</p>
     </div>
 </body>
 
