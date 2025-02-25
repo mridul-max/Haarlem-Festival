@@ -745,7 +745,7 @@ CREATE TABLE `carts` (
   PRIMARY KEY (`cartId`),
   KEY `carts_FK` (`customerId`),
   CONSTRAINT `carts_FK` FOREIGN KEY (`customerId`) REFERENCES `customers` (`userId`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=220 DEFAULT CHARSET=utf8;
 
 -- Create cartitems table to store items in carts
 DROP TABLE IF EXISTS `cartitems`;
@@ -759,7 +759,7 @@ CREATE TABLE `cartitems` (
   KEY `cartitems_FK_1` (`ticketLinkId`),
   CONSTRAINT `cartitems_FK` FOREIGN KEY (`cartId`) REFERENCES `carts` (`cartId`) ON DELETE CASCADE,
   CONSTRAINT `cartitems_FK_1` FOREIGN KEY (`ticketLinkId`) REFERENCES `ticketlinks` (`ticketLinkId`) ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=370 DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `resettokens`;
 CREATE TABLE `resettokens` (

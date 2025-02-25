@@ -42,11 +42,12 @@ class APIController
     {
     }
 
-    final protected function sendErrorMessage($message, $code = 500)
+    protected function sendErrorMessage(string $message, int $code = 500)
     {
-        header('Content-Type: application/json');
         http_response_code($code);
-        echo json_encode(["error_message" => $message]);
+        header('Content-Type: application/json');
+        echo json_encode(['error' => $message]);
+        exit;
     }
 
     final protected function sendSuccessMessage($message, $code = 200)

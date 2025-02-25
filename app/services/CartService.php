@@ -3,6 +3,8 @@ require_once(__DIR__ . '/../repositories/CartRepository.php');
 require_once(__DIR__ . '/../models/Exceptions/EventSoldOutException.php');
 require_once(__DIR__ . '/../models/Exceptions/CartException.php');
 require_once(__DIR__ . '/../models/Exceptions/AuthenticationException.php');
+require_once(__DIR__ . '/../models/Cart.php');
+require_once(__DIR__ . '/../models/CartItem.php');
 require_once(__DIR__ . '/OrderService.php');
 require_once(__DIR__ . '/CustomerService.php');
 
@@ -10,6 +12,7 @@ class CartService {
     private $cartRepository;
     private $orderService;
     private $customerService;
+    //private $cart;
 
     public function __construct() {
         $this->cartRepository = new CartRepository();
@@ -32,61 +35,91 @@ class CartService {
         }
         return $user;
     }
-
-    public function getCart(): array {
-        try {
-            $customer = $this->getAuthenticatedCustomer();
-            $cart = $this->cartRepository->findCartByCustomerId($customer->getUserId());
-            
-            if (!$cart) {
-                return [];
-            }
-            
-            return array_map(function($item) {
-                return [
-                    'ticketLinkId' => $item->getTicketLinkId(),
-                    'quantity' => $item->getQuantity()
-                ];
-            }, $cart->getCartItems());
-        } catch (AuthenticationException $e) {
-            return [];
+    public function getCartByCustomerId(int $customerId): Cart {
+        $cartData = $this-> cartRepository->findCartData($customerId);
+        
+        if (!$cartData) {
+            return $this->cartRepository->createCart($customerId);
         }
+    
+        $cart = $this->cartRepository->buildCart($cartData);
+        $this->cartRepository->refreshCartItems($cart);
+        return $cart;
     }
 
     public function getCount(): int {
         try {
             $customer = $this->getAuthenticatedCustomer();
             $cart = $this->cartRepository->findCartByCustomerId($customer->getUserId());
-            return $cart ? $cart->getTotalQuantity() : 0;
+            
+            if (!$cart) {
+                return 0;
+            }
+            
+            return $this->cartRepository->getTotalQuantity($cart->getCartId());
         } catch (AuthenticationException $e) {
-            return 0;
+            throw $e; // Re-throw to be caught by controller
         } catch (Exception $e) {
-            // Log the error if you have logging configured
-            // error_log($e->getMessage());
-            return 0;  // Return 0 for any unexpected errors
+            throw $e; // Re-throw to be caught by controller
+        }
+    }
+    public function getCartItems(): array {
+        try {
+            $customer = $this->getAuthenticatedCustomer();
+            $cart = $this->getCartByCustomerId($customer->getUserId());
+            return $cart->getCartItems();
+        } catch (AuthenticationException $e) {
+            throw new AuthenticationException("Authentication required to access cart");
+        } catch (Exception $e) {
+            error_log("Error retrieving cart items: " . $e->getMessage());
+            throw new CartException("Could not retrieve cart items");
         }
     }
 
+    public function getCart(): Cart {
+        try {
+            $customer = $this->getAuthenticatedCustomer();
+            
+            // Get or create cart using repository method that ensures cart existence
+            $cart = $this->getCartByCustomerId($customer->getUserId());
+            $cart->setCartItems($this->getCartItems());
+            
+            return $cart;
+        } catch (AuthenticationException $e) {
+            throw $e;
+        } catch (Exception $e) {
+            throw $e;
+        }
+    }
+            // Return proper JSON response
     public function addItem($ticketLinkId): void {
-        $customer = $this->getAuthenticatedCustomer();
-        $cart = $this->cartRepository->findCartByCustomerId($customer->getUserId()) ?? new Cart($customer->getUserId());
-        
-        // Add or update item
-        $existingItem = null;
-        foreach ($cart->getCartItems() as $item) {
-            if ($item->getTicketLinkId() == $ticketLinkId) {
-                $existingItem = $item;
-                break;
+        try {
+            $customer = $this->getAuthenticatedCustomer();
+            $cart = $this->getCartByCustomerId($customer->getUserId());
+    
+            if (!$cart || !$cart->getCartId()) {
+                throw new CartException("Cart initialization failed");
             }
+    
+            $existingItem = $this->cartRepository->findCartItem($cart->getCartId(), $ticketLinkId);
+            
+            if ($existingItem) {
+                $this->cartRepository->updateItemQuantity(
+                    $existingItem->getCartItemId(), 
+                    $existingItem->getQuantity() + 1
+                );
+            } else {
+                $this->cartRepository->addCartItem(
+                    $cart->getCartId(),
+                    $ticketLinkId,
+                    1
+                );
+            }
+        } catch (AuthenticationException $e) {
+            throw $e; // Let controller handle
+        } catch (Exception $e) {
+            throw new Exception("Failed to update cart: " . $e->getMessage());
         }
-        
-        if ($existingItem) {
-            $existingItem->setQuantity($existingItem->getQuantity() + 1);
-        } else {
-            $cart->addItem(new CartItem($ticketLinkId, 1, $cart->getCartId()));
-        }
-        
-        $this->cartRepository->saveCart($cart);
     }
 
     public function removeItem($ticketLinkId): void {

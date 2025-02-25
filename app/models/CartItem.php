@@ -7,13 +7,23 @@ class CartItem {
     private int $cartId;
 
     public function __construct(
+        int $cartItemId,
         int $ticketLinkId,
         int $quantity,
         int $cartId
     ) {
+        $this->cartItemId = $cartItemId;
         $this->ticketLinkId = $ticketLinkId;
         $this->quantity = $quantity;
         $this->cartId = $cartId;
+    }
+    public function jsonSerialize(): mixed {
+        return [
+            'cartItemId' => $this->cartItemId,
+            'ticketLinkId' => $this->ticketLinkId,
+            'quantity' => $this->quantity,
+            'cartId' => $this->cartId
+        ];
     }
 
     // Getters

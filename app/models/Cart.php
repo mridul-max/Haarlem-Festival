@@ -1,16 +1,18 @@
 <?php
 
-class Cart {
+class Cart implements \JsonSerializable {
     private int $cartId;
     private int $customerId;
     private DateTime $createdDate;
     private array $cartItems = [];
 
     public function __construct(
+        int $cartId,
         int $customerId,
-        DateTime $createdDate = new DateTime(),
-        array $cartItems = []
+        DateTime $createdDate,
+        array $cartItems
     ) {
+        $this->cartId = $cartId;
         $this->customerId = $customerId;
         $this->createdDate = $createdDate;
         $this->cartItems = $cartItems;
@@ -68,6 +70,18 @@ class Cart {
             fn($total, $item) => $total + $item->getQuantity(),
             0
         );
+    }
+
+
+    public function jsonSerialize(): mixed {
+        return [
+            'cartId' => $this->cartId,
+            'customerId' => $this->customerId,
+            'createdDate' => $this->createdDate->format('Y-m-d H:i:s'),
+            'cartItems' => $this->cartItems,
+            'totalItems' => $this->getTotalItems(),
+            'totalQuantity' => $this->getTotalQuantity()
+        ];
     }
 }
 

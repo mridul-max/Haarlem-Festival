@@ -31,11 +31,10 @@ class OrderController
 
         try {
             if (isset($_GET["id"])) {
-                $cartOrder = $this->cartService->getCartByOrderId($_GET["id"]);
-                $shareMode = true;
+                $cartOrder = $this->cartService->getCartByCustomerId($_GET["id"]);
             } else {
                 $cartOrder = $this->cartService->getCart();
-                if ($cartOrder->getTotalItemCount() > 0) {
+                if ($cartOrder->getCartItems() > 0) {
                     $hasStuffInCart = true;
                 }
             }

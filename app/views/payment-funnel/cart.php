@@ -1,3 +1,9 @@
+<?php 
+// Add this at the top of your view file
+$cart = $cart ?? null;
+$isLoggedIn = $isLoggedIn ?? false;
+$hasItems = $cart && !empty($cart->getCartItems());
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -31,44 +37,43 @@
                         <div class="progress-bar" style="width: 50%;"></div>
                     </div>
 
-                    <!-- Timeline for Order History -->
+                    <!-- Cart Items -->
                     <div class="timeline">
-                        <?php if ($isLoggedIn && $cartOrder !== null) {
-                            $orderItems = $cartOrder->getOrderItems();
-                            foreach ($orderItems as $orderItem) {
-                                $id = $orderItem->getTicketLinkId(); ?>
+                        <?php if ($isLoggedIn && $hasItems) {
+                            foreach ($cart->getCartItems() as $cartItem) {
+                                $id = $cartItem->getTicketLinkId(); var_dump($id); ?>
                                 <div class="timeline-item">
                                     <div id="cart-item-<?= $id ?>" class="card p-3">
                                         <div class="card-header">
                                             <h5 class="card-title">
-                                                <?= $orderItem->getEventName() ?> -
-                                                <?= $orderItem->getTicketName() ?>
+                                                <?= $cartItem->getEventName() ?> -
+                                                <?= $cartItem->getTicketName() ?>
                                             </h5>
                                         </div>
                                         <div class="card-body">
                                             <h6 class="card-subtitle mb-2 text-muted">
-                                                Price per ticket: <strong>&euro; <?= number_format($orderItem->getFullTicketPrice(), 2, '.'); ?></strong>
-                                                (&euro; <?= number_format($orderItem->getBasePrice(), 2, '.'); ?>
-                                                + &euro; <?= number_format($orderItem->getVatAmount(), 2, '.'); ?> VAT)
+                                                Price per ticket: <strong>&euro; <?= number_format($cartItem->getFullTicketPrice(), 2, '.'); ?></strong>
+                                                (&euro; <?= number_format($cartItem->getBasePrice(), 2, '.'); ?>
+                                                + &euro; <?= number_format($cartItem->getVatAmount(), 2, '.'); ?> VAT)
                                             </h6>
                                             <div class="quantity-control mt-3">
-                                                <?php if (!$shareMode) { ?>
+                                                <?php if ($isLoggedIn) { ?>
                                                     <button id="cart-item-remove-<?= $id ?>" class="btn btn-danger">-</button>
                                                 <?php } ?>
                                                 <span id="cart-item-counter-<?= $id ?>" class="fw-bold mx-2">
-                                                    <?= $orderItem->getQuantity() ?>
+                                                    <?= $cartItem->getQuantity() ?>
                                                 </span>
-                                                <?php if (!$shareMode) { ?>
+                                                <?php if ($isLoggedIn) { ?>
                                                     <button id="cart-item-add-<?= $id ?>" class="btn btn-success">+</button>
                                                 <?php } ?>
-                                                <?php if (!$shareMode) { ?>
-                                                    <button id="order-item-delete-<?= $id ?>" class="btn btn-danger ms-3">DELETE</button>
+                                                <?php if ($isLoggedIn) { ?>
+                                                    <button id="cart-item-delete-<?= $id ?>" class="btn btn-danger ms-3">DELETE</button>
                                                 <?php } ?>
                                                 <span id="cart-item-unit-price-<?= $id ?>" class="d-none">
-                                                    <?= $orderItem->getFullTicketPrice() ?>
+                                                    <?= $cartItem->getFullTicketPrice() ?>
                                                 </span>
                                                 <span id="cart-item-total-price-<?= $id ?>" class="price ms-auto">
-                                                    &euro; <?= number_format($orderItem->getTotalFullPrice(), 2, '.'); ?>
+                                                    &euro; <?= number_format($cartItem->getTotalFullPrice(), 2, '.'); ?>
                                                 </span>
                                             </div>
                                         </div>
@@ -77,20 +82,18 @@
                             <?php }
                         } else { ?>
                             <div class="alert alert-info" role="alert">
-                                Please log in to view your cart and purchase tickets for the Haarlem Festival.
+                                <?= $isLoggedIn ? 'Your cart is empty.' : 'Please log in to view your cart and purchase tickets for the Haarlem Festival.' ?>
                             </div>
                         <?php } ?>
                     </div>
 
                     <!-- Checkout Section -->
-                    <?php if ($hasStuffInCart && $isLoggedIn && $cartOrder !== null) { ?>
+                    <?php if ($isLoggedIn && $hasItems) { ?>
                         <h4 id="total" class="total-price">Total price: &euro;
-                            <?= number_format($cartOrder->getTotalPrice(), 2, '.'); ?>
+                            <?= number_format($cart->getTotalPrice(), 2, '.'); ?>
                         </h4>
-                        <?php if (!$shareMode) { ?>
-                            <button class="btn btn-primary checkout-btn" onclick="checkout()">Check out</button>
-                            <br>
-                        <?php } ?>
+                        <button class="btn btn-primary checkout-btn" onclick="checkout()">Check out</button>
+                        <br>
                     <?php } ?>
                 </div>
             </div>

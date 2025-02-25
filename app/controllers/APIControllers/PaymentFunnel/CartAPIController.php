@@ -15,7 +15,7 @@ class CartAPIController extends APIController {
     protected function handleGetRequest($uri) {
         try {
             if ($uri == "/api/cart/count") {
-                $count = $this->cartService->getCount();
+                $count = $this->cartService->getCount;
                 parent::sendResponse(["count" => $count]);
             } else if ($uri == "/api/cart") {
                 parent::sendResponse($this->cartService->getCart());
@@ -24,8 +24,8 @@ class CartAPIController extends APIController {
             }
         } catch (AuthenticationException $e) {
             parent::sendErrorMessage("Authentication required", 401);
-        } catch (Exception $e) {
-            parent::sendErrorMessage($e->getMessage(), $e->getCode());
+        } catch (Throwable $e) { // Catch all errors and exceptions
+            parent::sendErrorMessage($e->getMessage(), $e->getCode() ?: 500);
         }
     }
 

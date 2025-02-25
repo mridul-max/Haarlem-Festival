@@ -10,23 +10,20 @@ class CartRepository extends Repository
         parent::__construct();
     }
 
-    public function getCartByCustomerId(int $customerId): Cart
-    {
-        $sql = "SELECT * FROM carts WHERE customerId = :customerId";
-        $stmt = $this->connection->prepare($sql);
-        $stmt->bindValue(":customerId", htmlspecialchars($customerId));
-        $stmt->execute();
-
-        $cartData = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        if (!$cartData) {
-            // Create new cart if none exists
-            return $this->createCart($customerId);
-        }
-
-        $cart = $this->buildCart($cartData);
-        $cart->items = $this->getCartItems($cart->cartId);
-        return $cart;
+    
+    
+    private function findCartData(int $customerId): ?array {
+        $stmt = $this->connection->prepare(
+            "SELECT cartId, customerId, createdDate 
+             FROM carts 
+             WHERE customerId = :customerId"
+        );
+        $stmt->execute([':customerId' => $customerId]);
+        return $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
+    }
+    
+    private function refreshCartItems(Cart $cart): void {
+        $cart->setCartItems($this->getCartItems($cart->getCartId()));
     }
 
     private function createCart(int $customerId): Cart
@@ -43,50 +40,125 @@ class CartRepository extends Repository
             []
         );
     }
-
-    public function saveCart(Cart $cart): void
-    {
-        // Save cart items
-        $this->connection->prepare("DELETE FROM cartitems WHERE cartId = :cartId")
-            ->execute([':cartId' => $cart->cartId]);
-
-        $sql = "INSERT INTO cartitems (cartId, ticketLinkId, quantity) VALUES (:cartId, :ticketLinkId, :quantity)";
+    public function findCartByCustomerId(int $customerId): ?Cart {
+        // Get cart with explicit columns
+        $sql = "SELECT cartId, customerId, createdDate FROM carts WHERE customerId = :customerId";
         $stmt = $this->connection->prepare($sql);
+        $stmt->bindValue(":customerId", $customerId, PDO::PARAM_INT);
+        $stmt->execute();
 
-        foreach ($cart->items as $item) {
-            $stmt->bindValue(":cartId", htmlspecialchars($cart->cartId));
-            $stmt->bindValue(":ticketLinkId", htmlspecialchars($item->ticketLinkId));
-            $stmt->bindValue(":quantity", htmlspecialchars($item->quantity));
-            $stmt->execute();
+        $cartData = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$cartData) {
+            return null;
         }
+
+        $cart = $this->buildCart($cartData);
+        $cart->items = $this->getCartItems($cart->cartId);
+        return $cart;
+    }
+    public function updateItemQuantity(int $cartItemId, int $newQuantity): void {
+        $sql = "UPDATE cartitems SET quantity = :quantity WHERE cartItemId = :cartItemId";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->execute([
+            ':quantity' => $newQuantity,
+            ':cartItemId' => $cartItemId
+        ]);
     }
 
-    private function getCartItems(int $cartId): array
-    {
-        $sql = "SELECT * FROM cartitems WHERE cartId = :cartId";
+    public function getTotalQuantity(int $cartId): int {
+        $sql = "SELECT SUM(quantity) AS total FROM cartitems WHERE cartId = :cartId";
         $stmt = $this->connection->prepare($sql);
-        $stmt->bindValue(":cartId", htmlspecialchars($cartId));
+        $stmt->bindValue(":cartId", $cartId, PDO::PARAM_INT);
+        $stmt->execute();
+        
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return (int) ($result['total'] ?? 0);
+    }
+
+    public function addCartItem(int $cartId, int $ticketLinkId, int $quantity): void {
+        $sql = "INSERT INTO cartitems (cartId, ticketLinkId, quantity)
+                VALUES (:cartId, :ticketLinkId, :quantity)";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->execute([
+            ':cartId' => $cartId,
+            ':ticketLinkId' => $ticketLinkId,
+            ':quantity' => $quantity
+        ]);
+    }
+
+    public function findCartItem(int $cartId, int $ticketLinkId): ?CartItem {
+        $sql = "SELECT cartItemId, ticketLinkId, quantity 
+                FROM cartitems 
+                WHERE cartId = :cartId AND ticketLinkId = :ticketLinkId";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->execute([
+            ':cartId' => $cartId,
+            ':ticketLinkId' => $ticketLinkId
+        ]);
+        
+        $data = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $data ? $this->buildCartItem($data) : null;
+    }
+
+    private function getCartItems(int $cartId): array {
+        // Explicit column selection
+        $sql = "SELECT cartItemId, ticketLinkId, quantity, cartId 
+                FROM cartitems 
+                WHERE cartId = :cartId";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindValue(":cartId", $cartId, PDO::PARAM_INT);
         $stmt->execute();
 
         return array_map([$this, 'buildCartItem'], $stmt->fetchAll());
     }
 
-    private function buildCart(array $data): Cart
-    {
-        return new Cart(
-            $data['cartId'],
-            $data['customerId'],
-            new DateTime($data['createdDate']),
-            []
+    public function saveCart(Cart $cart): void {
+    // Only needed if you want to keep the bulk save capability
+    $this->connection->beginTransaction();
+    
+    try {
+        $this->connection->prepare("DELETE FROM cartitems WHERE cartId = :cartId")
+            ->execute([':cartId' => $cart->getCartId()]);
+
+        $stmt = $this->connection->prepare(
+            "INSERT INTO cartitems (cartId, ticketLinkId, quantity) 
+             VALUES (:cartId, :ticketLinkId, :quantity)"
         );
+
+        foreach ($cart->getCartItems() as $item) {
+            $stmt->execute([
+                ':cartId' => $cart->getCartId(),
+                ':ticketLinkId' => $item->getTicketLinkId(),
+                ':quantity' => $item->getQuantity()
+            ]);
+        }
+        
+        $this->connection->commit();
+    } catch (Exception $e) {
+        $this->connection->rollBack();
+        throw $e;
+        }
     }
 
-    private function buildCartItem(array $data): CartItem
+    public function buildCart(array $data): Cart 
     {
+        //$cartId = (int)$data['cartId'];
+        return new Cart(
+            (int)$data['cartId'],
+            (int)$data['customerId'],
+            new DateTime($data['createdDate']),
+            []// Load items
+        );
+    }
+    
+    // Fix buildCartItem() to include cartId
+    public function buildCartItem(array $data): CartItem {
         return new CartItem(
-            $data['cartItemId'],
-            $data['ticketLinkId'],
-            $data['quantity']
+            (int)$data['cartItemId'],
+            (int)$data['ticketLinkId'],
+            (int)$data['quantity'],
+            (int)$data['cartId']
         );
     }
 }
