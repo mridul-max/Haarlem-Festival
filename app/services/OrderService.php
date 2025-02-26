@@ -65,7 +65,9 @@ class OrderService
         $order = $this->orderRepository->insertOrder($order);
 
         //After we created the order, we can create the first orderItem that will be linked to the new order.
-        $this->createOrderItem($ticketLinkId, $order->getOrderId());
+        $order->setOrderItems([$this->createOrderItem($ticketLinkId, $order->getOrderId())]);
+        $order = $this->getOrderById($order->getOrderId());
+        
         return $order;
     }
 
@@ -96,6 +98,28 @@ class OrderService
     public function deleteOrderItem($orderItemId): void
     {
         $this->orderRepository->deleteOrderItem($orderItemId);
+    }
+        // In OrderService.php
+    public function finalizeOrder(int $orderId): Order
+    {
+        $order = $this->getOrderById($orderId);
+        
+        // Validate order items
+        if (count($order->getOrderItems()) === 0) {
+            throw new CartException("Cannot finalize empty order");
+        }
+        
+        // Perform any final validation
+        $order->setIsPaid(true);
+        return $this->orderRepository->updateOrder($orderId, $order);
+    }
+
+    public function createEmptyOrder(): Order
+    {
+        $order = new Order();
+        $order->setOrderDate(new DateTime());
+        $order->setIsPaid(false);
+        return $this->orderRepository->insertOrder($order);
     }
 
     public function mergeOrders(Order $customerOrder, Order $sessionOrder): Order

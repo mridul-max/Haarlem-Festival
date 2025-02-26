@@ -61,7 +61,7 @@ for (let counter of cartCounterSpans) {
 }
 
 // Get hostname.
-const hostname = window.location.hostname;
+/*const hostname = window.location.hostname;
 const protocol = window.location.protocol;
 // Format: http://hostnane/shopping-cart?id=cartId
 const shareId = document.getElementById('share-id').value;
@@ -74,11 +74,12 @@ async function shareMyCart() {
     // Select entire text in the input field and copy it to clipboard.
     shareUrlText.select();
     await navigator.clipboard.writeText(shareUrlText.value);
-}
+}*/
 
 function checkout() {
     Cart.Checkout()
         .then(() => {
+            console.log('order placed');
             Cart.Clear();
             showOrderHistory();
         })

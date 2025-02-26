@@ -197,7 +197,7 @@ class OrderRepository extends Repository
     }
 
     //Insert a new order into the database
-    public function insertOrder($order): Order
+    /*public function insertOrder($order): Order
     {
         $sql = "INSERT INTO orders (orderDate, customerId, isPaid) VALUES (:orderDate, :customerId, 0)";
         $stmt = $this->connection->prepare($sql);
@@ -216,6 +216,27 @@ class OrderRepository extends Repository
         $this->removeOldOrders();
 
         return $this->getOrderById($insertId);
+    }*/
+        // In OrderRepository.php
+    public function insertOrder(Order $order): Order
+    {
+        $sql = "INSERT INTO orders (orderDate, customerId, isPaid) 
+                VALUES (:orderDate, :customerId, :isPaid)";
+        
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindValue(":orderDate", $order->getOrderDate()->format('Y-m-d H:i:s'));
+        $stmt->bindValue(":isPaid", $order->getIsPaid(), PDO::PARAM_BOOL);
+        
+        if ($order->getCustomer()) {
+            $stmt->bindValue(":customerId", $order->getCustomer()->getUserId());
+        } else {
+            $stmt->bindValue(":customerId", null, PDO::PARAM_NULL);
+        }
+        
+        $stmt->execute();
+        $order->setOrderId($this->connection->lastInsertId());
+        
+        return $order;
     }
 
     public function insertOrderItem($orderItem, $orderId): OrderItem

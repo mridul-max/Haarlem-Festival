@@ -156,18 +156,25 @@ function createToast(header, msg) {
     }
 
     Cart.Checkout = function () {
+        const url = apiUrl + '/checkout';
         return new Promise((resolve, reject) => {
-            fetch(apiUrl + '/checkout').then(response => response.json())
-                .then(data => {
-                    Cart.UpdateCounter();
-                    resolve(data);
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
                 }
-                ).catch(error => {
-                    reject(error);
-                }
-                );
+            })
+            .then(response => response.json())
+            .then(data => {
+                Cart.UpdateCounter();
+                resolve(data);
+            })
+            .catch(error => {
+                reject(error);
+            });
         });
     }
+    
     Cart.Clear = function () {
         const url = apiUrl + '/clear';
         return new Promise((resolve, reject) => {

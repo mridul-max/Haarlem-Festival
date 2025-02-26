@@ -82,22 +82,37 @@ class CartService
         if (session_status() == PHP_SESSION_NONE) {
             session_start();
         }
-        if (!isset($_SESSION["cartId"])) {
-            return $this->initialiseCart($ticketLinkId);
-        } else {
-            $order = $this->orderService->getOrderById($_SESSION["cartId"]);
 
-            foreach ($order->getOrderItems() as $orderItem) {
-                if ($orderItem->getTicketLinkId() == $ticketLinkId) {
-                    $orderItem->setQuantity($orderItem->getQuantity() + 1);
-                    $this->orderService->updateOrderItem($orderItem->getOrderItemId(), $orderItem);
-                    return $order;
+        if (!isset($_SESSION["cartId"])) {
+            $order = $this->initialiseCart($ticketLinkId);
+            $_SESSION["cartId"] = $order->getOrderId();
+            return $order;
+        } else {
+            $orderId = $_SESSION["cartId"];
+            $order = $this->orderService->getOrderById($orderId);
+
+            // Check if the item exists in the order
+            $existingItem = null;
+            foreach ($order->getOrderItems() as $item) {
+                if ($item->getTicketLinkId() == $ticketLinkId) {
+                    $existingItem = $item;
+                    break;
                 }
             }
-            $orderItem = $this->orderService->createOrderItem($ticketLinkId, $order->getOrderId());
-            $order->addOrderItem($orderItem);
+
+            if ($existingItem) {
+                // Increment quantity
+                $existingItem->setQuantity($existingItem->getQuantity() + 1);
+                $this->orderService->updateOrderItem($existingItem->getOrderItemId(), $existingItem);
+            } else {
+                // Add new OrderItem
+                $this->orderService->createOrderItem($ticketLinkId, $orderId);
+            }
+
+            // Reload the order to reflect changes
+            $order = $this->orderService->getOrderById($orderId);
+            return $order;
         }
-        return $order;
     }
 
     public function removeItem($ticketLinkId): Order
@@ -183,20 +198,74 @@ class CartService
 
         return $cartOrder;
     }
-    
-    public function clearCart(): void
-{
-    if (session_status() == PHP_SESSION_NONE) {
-        session_start();
-    }
-    if (isset($_SESSION["cartId"])) {
-        $order = $this->orderService->getOrderById($_SESSION["cartId"]);
-        foreach ($order->getOrderItems() as $orderItem) {
-            $this->orderService->deleteOrderItem($orderItem->getOrderItemId());
+        // In CartService.php
+    public function checkoutCart(): Order
+    {
+        $cartOrder = $this->getCart();
+        // 1. Validate cart and permissions
+        $cartOrder = $this->checkValidCheckout();
+        
+        try {
+            // 2. Finalize current order
+            $cartOrder->setIsPaid(true);
+            $finalizedOrder = $this->orderService->finalizeOrder($cartOrder->getOrderId());
+            
+            // 3. Clear current cart from session
+            $this->clearCartSession();
+            
+            // 4. Create new empty cart for future items
+            $this->initializeNewCart();
+            
+            return $finalizedOrder;
+            
+        } catch (Exception $e) {
+            throw new CartException("Checkout failed: " . $e->getMessage());
         }
-        $order->setOrderItems([]);
-        $this->orderService->updateOrder($order->getOrderId(), $order);
+    }
+
+    private function clearCartSession(): void
+    {
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
         unset($_SESSION["cartId"]);
     }
-}
+
+    private function initializeNewCart(): void
+    {
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+        
+        // Create new empty order
+        $newOrder = $this->orderService->createEmptyOrder();
+        
+        if (isset($_SESSION["user"])) {
+            $user = unserialize($_SESSION["user"]);
+            if ($user instanceof Customer) {
+                $newOrder->setCustomer($user);
+                $this->orderService->updateOrder($newOrder->getOrderId(), $newOrder);
+            }
+        }
+        
+        $_SESSION["cartId"] = $newOrder->getOrderId();
+    }
+
+    
+    public function clearCart(): void
+    {
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+        if (isset($_SESSION["cartId"])) {
+            $order = $this->orderService->getOrderById($_SESSION["cartId"]);
+            foreach ($order->getOrderItems() as $orderItem) {
+                $this->orderService->deleteOrderItem($orderItem->getOrderItemId());
+            }
+            $order->setOrderItems([]);
+            $this->orderService->updateOrder($order->getOrderId(), $order);
+            unset($_SESSION["cartId"]);
+        }
+    }
+    
 }

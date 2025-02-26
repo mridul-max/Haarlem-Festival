@@ -52,18 +52,18 @@
                                                 + &euro; <?= number_format($orderItem->getVatAmount(), 2, '.'); ?> VAT)
                                             </h6>
                                             <div class="quantity-control mt-3">
-                                                <?php if (!$shareMode) { ?>
+                                                <?php  ?>
                                                     <button id="cart-item-remove-<?= $id ?>" class="btn btn-danger">-</button>
-                                                <?php } ?>
+                                                <?php  ?>
                                                 <span id="cart-item-counter-<?= $id ?>" class="fw-bold mx-2">
                                                     <?= $orderItem->getQuantity() ?>
                                                 </span>
-                                                <?php if (!$shareMode) { ?>
+                                                <?php ?>
                                                     <button id="cart-item-add-<?= $id ?>" class="btn btn-success">+</button>
-                                                <?php } ?>
-                                                <?php if (!$shareMode) { ?>
+                                                <?php  ?>
+                                                <?php  ?>
                                                     <button id="order-item-delete-<?= $id ?>" class="btn btn-danger ms-3">DELETE</button>
-                                                <?php } ?>
+                                                <?php  ?>
                                                 <span id="cart-item-unit-price-<?= $id ?>" class="d-none">
                                                     <?= $orderItem->getFullTicketPrice() ?>
                                                 </span>
@@ -75,11 +75,11 @@
                                     </div>
                                 </div>
                             <?php }
-                        } else { ?>
+                        }?>
                             <div class="alert alert-info" role="alert">
                                 Please log in to view your cart and purchase tickets for the Haarlem Festival.
                             </div>
-                        <?php } ?>
+                        <?php ?>
                     </div>
 
                     <!-- Checkout Section -->
@@ -87,10 +87,10 @@
                         <h4 id="total" class="total-price">Total price: &euro;
                             <?= number_format($cartOrder->getTotalPrice(), 2, '.'); ?>
                         </h4>
-                        <?php if (!$shareMode) { ?>
+                        <?php ?>
                             <button class="btn btn-primary checkout-btn" onclick="checkout()">Check out</button>
                             <br>
-                        <?php } ?>
+                        <?php  ?>
                     <?php } ?>
                 </div>
             </div>

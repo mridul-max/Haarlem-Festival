@@ -20,7 +20,6 @@ class OrderController
     {
         $hasStuffInCart = false;
         $cartOrder = null;
-        $shareMode = false;
         $isLoggedIn = isset($_SESSION['user']);
 
         $isCustomerOrVisitor = true;
@@ -30,14 +29,9 @@ class OrderController
         }
 
         try {
-            if (isset($_GET["id"])) {
-                $cartOrder = $this->cartService->getCartByOrderId($_GET["id"]);
-                $shareMode = true;
-            } else {
-                $cartOrder = $this->cartService->getCart();
-                if ($cartOrder->getTotalItemCount() > 0) {
-                    $hasStuffInCart = true;
-                }
+            $cartOrder = $this->cartService->getCart();
+            if ($cartOrder->getTotalItemCount() > 0) {
+                $hasStuffInCart = true;
             }
         } catch (Throwable $e) {
             $cartOrder = null;
@@ -48,17 +42,16 @@ class OrderController
 
     public function showOrderHistory()
     {
-    
-            if (session_status() == PHP_SESSION_NONE) {
-                session_start();
-            }
-            $customer = unserialize($_SESSION['user']);
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+        $customer = unserialize($_SESSION['user']);
 
-            $orders = $this->orderService->getOrderHistory($customer->getUserId());
+        $orders = $this->orderService->getOrderHistory($customer->getUserId());
 
-            if ($orders == null) {
-                throw new Exception("No orders found");
-            }
-            require_once('../views/payment-funnel/order-history.php');
+        if ($orders == null) {
+            throw new Exception("No orders found");
+        }
+        require_once('../views/payment-funnel/order-history.php');
     }
 }

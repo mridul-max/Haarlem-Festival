@@ -49,6 +49,7 @@ class CartAPIController extends APIController
             }
             else if (str_starts_with($uri, "/api/cart/checkout")) {
                 $chkout = $this->cartService->checkoutCart();
+                parent::sendResponse($chkout);
                 return;
             } else if (str_starts_with($uri, "/api/cart/clear")) {
                 $this->cartService->clearCart();

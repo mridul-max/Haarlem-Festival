@@ -121,7 +121,7 @@ function onLoad() {
     const createdByUlLi = document.createElement('li');
     createdByUlLi.classList.add('list-unstyled');
     const createdByUlLiP = document.createElement('p');
-    createdByUlLiP.innerText = 'Copyright@ Mahedi & Taanzel 2025';
+    createdByUlLiP.innerText = 'Copyright@ Mahedi & Tanzeel 2025';
     createdByUlLi.appendChild(createdByUlLiP);
     createdByUl.appendChild(createdByUlLi);
     // add the div
