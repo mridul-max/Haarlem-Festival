@@ -27,7 +27,6 @@ class UserService
 
     public function verifyUser($data): ?User
     {
-        //Sanitise data
         $data->email = htmlspecialchars($data->email);
         $data->password = htmlspecialchars($data->password);
 

@@ -1,5 +1,4 @@
-// Author: Konrad
-const HAARLEM_LOCATION = [52.3814425, 4.6360367]; // I don't think Haarlem is going to move anytime soon.
+const HAARLEM_LOCATION = [52.3814425, 4.6360367];
 const DEFAULT_ZOOM_LEVEL = 16;
 
 class HMap {
@@ -141,11 +140,9 @@ class GeneralMap extends HMap {
 
         let buttons = [
             { name: 'Overview', function: () => { this.showOverview(); } },
-            { name: 'DANCE!', function: () => { this.showDance(); } },
             { name: 'Haarlem Jazz', function: () => { this.showJazz() } },
             { name: 'Stroll Through Haarlem', function: () => { this.showStroll() } },
-            { name: 'Yummy!', function: () => { this.showYummy() } },
-            { name: 'The Teyler Mystery', function: () => { this.showTeyler() } },
+
         ]
 
         buttons.forEach(button => {
@@ -207,17 +204,6 @@ class GeneralMap extends HMap {
             [52.383857660450126, 4.629181623458863],
             [52.38364810660761, 4.630469083786012]
         ], '#4943A0');
-
-        this.addArea('DANCE! Venue', [
-            [52.411712914646635, 4.60553526878357],
-            [52.41157752977527, 4.608570212417496],
-            [52.40949635203989, 4.607754820876969],
-            [52.40981049836807, 4.6043215933379065]
-        ], '#4943A0');
-    }
-        showDance() {
-        this.moveMap(HAARLEM_LOCATION, DEFAULT_ZOOM_LEVEL);
-        this.clearPins()
     }
 
     loadPinsForType(type) {
@@ -257,17 +243,6 @@ class GeneralMap extends HMap {
         this.clearPins();
         this.loadPinsForType(3);
     }
-
-    showYummy() {
-        this.moveMap(HAARLEM_LOCATION, DEFAULT_ZOOM_LEVEL);
-        this.clearPins();
-        this.loadPinsForType(2);
-    }
-
-    showTeyler() {
-        this.moveMap(HAARLEM_LOCATION, DEFAULT_ZOOM_LEVEL);
-        this.clearPins();
-    }
 }
 
 class EventMap extends HMap {
@@ -276,8 +251,6 @@ class EventMap extends HMap {
     }
 
     loadMap(L) {
-        // Get data.lon and data.lat from the container
-        // First check if they are se
         let data = this.container.dataset;
 
         if (!data.lon || !data.lat) {
