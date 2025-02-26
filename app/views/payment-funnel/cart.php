@@ -76,10 +76,15 @@
                                 </div>
                             <?php }
                         }?>
+                        <?php if ($isLoggedIn) { ?>
+                            <div class="alert alert-info" role="alert">
+                                Your cart is empty. Start adding tickets!
+                            </div>
+                        <?php } else { ?>
                             <div class="alert alert-info" role="alert">
                                 Please log in to view your cart and purchase tickets for the Haarlem Festival.
                             </div>
-                        <?php ?>
+                        <?php } ?>
                     </div>
 
                     <!-- Checkout Section -->

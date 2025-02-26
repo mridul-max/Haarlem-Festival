@@ -195,28 +195,6 @@ class OrderRepository extends Repository
         $stmt->execute();
         return $this->getOrderItemById($orderItemId);
     }
-
-    //Insert a new order into the database
-    /*public function insertOrder($order): Order
-    {
-        $sql = "INSERT INTO orders (orderDate, customerId, isPaid) VALUES (:orderDate, :customerId, 0)";
-        $stmt = $this->connection->prepare($sql);
-        $stmt->bindValue(":orderDate", htmlspecialchars($order->getOrderDateAsString()));
-
-        if ($order->getCustomer() != null) {
-            $customerId = $order->getCustomer()->getUserId();
-            $stmt->bindValue(":customerId", htmlspecialchars($customerId));
-        } else {
-            $stmt->bindValue(":customerId", null);
-        }
-        $stmt->execute();
-        $insertId = $this->connection->lastInsertId();
-
-        //Also cleanse the old orders from the database
-        $this->removeOldOrders();
-
-        return $this->getOrderById($insertId);
-    }*/
         // In OrderRepository.php
     public function insertOrder(Order $order): Order
     {

@@ -52,7 +52,7 @@ class CartAPIController extends APIController
                 parent::sendResponse($chkout);
                 return;
             } else if (str_starts_with($uri, "/api/cart/clear")) {
-                $this->cartService->clearCart();
+                $this->cartService->clearCartSession();
                 parent::sendResponse(["message" => "Cart cleared"]);
                 return;
             }else {

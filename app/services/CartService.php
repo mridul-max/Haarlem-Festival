@@ -250,22 +250,5 @@ class CartService
         
         $_SESSION["cartId"] = $newOrder->getOrderId();
     }
-
-    
-    public function clearCart(): void
-    {
-        if (session_status() == PHP_SESSION_NONE) {
-            session_start();
-        }
-        if (isset($_SESSION["cartId"])) {
-            $order = $this->orderService->getOrderById($_SESSION["cartId"]);
-            foreach ($order->getOrderItems() as $orderItem) {
-                $this->orderService->deleteOrderItem($orderItem->getOrderItemId());
-            }
-            $order->setOrderItems([]);
-            $this->orderService->updateOrder($order->getOrderId(), $order);
-            unset($_SESSION["cartId"]);
-        }
-    }
     
 }
