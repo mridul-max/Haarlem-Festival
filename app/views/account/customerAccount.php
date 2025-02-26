@@ -146,7 +146,9 @@
                 </div>
                 <div class=col-2>
                     <button class="btn btn-lg btn-light" onclick=logout()>Log out</button>
+                    <a href="/order-history" class="btn btn-lg btn-primary ms-2">View Tickets</a>
                 </div>
+
             </div>
         </div>
     </section>
