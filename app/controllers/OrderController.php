@@ -45,13 +45,25 @@ class OrderController
         if (session_status() == PHP_SESSION_NONE) {
             session_start();
         }
-        $customer = unserialize($_SESSION['user']);
-
-        $orders = $this->orderService->getOrderHistory($customer->getUserId());
-
-        if ($orders == null) {
-            throw new Exception("No orders found");
+    
+        try {
+            $customer = unserialize($_SESSION['user']);
+            
+            if (!$customer) {
+                throw new Exception("User not logged in.");
+            }
+    
+            $orders = $this->orderService->getOrderHistory($customer->getUserId());
+    
+            if (empty($orders)) {
+                throw new Exception("No orders found.");
+            }
+    
+            require_once('../views/payment-funnel/order-history.php');
+        } catch (Exception $e) {
+            $errorMessage = $e->getMessage();
+            require_once('../views/payment-funnel/order-history.php');
         }
-        require_once('../views/payment-funnel/order-history.php');
     }
+    
 }

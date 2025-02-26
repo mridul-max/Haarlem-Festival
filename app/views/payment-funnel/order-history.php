@@ -24,28 +24,53 @@
     <div class="container">
         <h1 class="mb-4">Order History</h1>
 
-        <!-- Order Cards -->
-        <div class="swiper order-cards">
-            <div class="swiper-wrapper">
-                <?php foreach ($orders as $order): ?>
-                <div class="swiper-slide order-card" 
-                     data-order-id="<?= $order->getOrderId() ?>"
-                     data-items='<?= json_encode($order->getOrderItems()) ?>'>
-                    <div class="row">
-                        <div class="col-md-8">
-                            <h5>Order ID: <?= $order->getOrderId() ?></h5>
-                            <p><strong>Order Date:</strong> <?= $order->getOrderDateAsDMY(); ?></p>
-                            <p><strong>Total:</strong> <?= "€ " . number_format($order->getTotalPrice(), 2) ?></p>
-                            <button class="btn btn-sm btn-outline-primary view-details">View Tickets</button>
+        <!-- Check if there are any orders -->
+<!-- Check if there are any orders -->
+<?php 
+$hasOrdersWithItems = false; // Track if at least one order has items
+?>
+
+<?php if (!empty($orders)): ?>
+    <div class="swiper order-cards">
+        <div class="swiper-wrapper">
+            <?php foreach ($orders as $order): ?>
+                <?php if (!empty($order->getOrderItems())): // Only show orders that have items ?>
+                    <?php $hasOrdersWithItems = true; // Set flag to true ?>
+                    <div class="swiper-slide order-card" 
+                        data-order-id="<?= $order->getOrderId() ?>"
+                        data-items='<?= json_encode($order->getOrderItems()) ?>'>
+                        <div class="row">
+                            <div class="col-md-8">
+                                <h5>Order ID: <?= $order->getOrderId() ?></h5>
+                                <p><strong>Order Date:</strong> <?= $order->getOrderDateAsDMY(); ?></p>
+                                <p><strong>Total:</strong> <?= "€ " . number_format($order->getTotalPrice(), 2) ?></p>
+                                <button class="btn btn-sm btn-outline-primary view-details">View Tickets</button>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <?php endforeach; ?>
-            </div>
-            <div class="swiper-pagination"></div>
-            <div class="swiper-button-prev"></div>
-            <div class="swiper-button-next"></div>
+                <?php endif; ?>
+            <?php endforeach; ?>
         </div>
+        <div class="swiper-pagination"></div>
+        <div class="swiper-button-prev"></div>
+        <div class="swiper-button-next"></div>
+    </div>
+
+    <!-- Show no orders message if all orders were empty -->
+    <?php if (!$hasOrdersWithItems): ?>
+        <div class="alert alert-warning text-center w-100">
+            <i class="fas fa-info-circle"></i> You have no orders yet. 
+            <br> <a href="/festival/jazz" class="btn btn-primary mt-2">Browse Events</a>
+        </div>
+    <?php endif; ?>
+
+<?php else: ?>
+    <div class="alert alert-warning text-center w-100">
+        <i class="fas fa-info-circle"></i> You have no orders yet. 
+        <br> <a href="/festival/jazz" class="btn btn-primary mt-2">Browse Events</a>
+    </div>
+<?php endif; ?>
+
 
         <!-- Order Details Modal -->
         <div class="modal fade" id="orderDetailsModal" tabindex="-1">
@@ -115,21 +140,24 @@
                 document.getElementById('modalOrderId').textContent = orderId;
                 const container = document.getElementById('orderItemsContainer');
                 container.innerHTML = '';
-                
-                items.forEach(item => {
-                    const itemHTML = `
-                        <div class="ticket-item mb-3 p-3 border-bottom">
-                            <h6>${item.eventName}</h6>
-                            <div class="text-muted small">
-                                <div>Ticket Type: ${item.ticketName}</div>
-                                <div>Event Time: ${new Date(item.startTime).toLocaleString()}</div>
-                                <div>Quantity: ${item.quantity}</div>
-                                <div>Price: €${item.fullTicketPrice.toFixed(2)} each</div>
+
+                if (items.length === 0) {
+                    container.innerHTML = `<div class="alert alert-warning">No tickets found for this order.</div>`;
+                } else {
+                    items.forEach(item => {
+                        const itemHTML = `
+                            <div class="ticket-item mb-3 p-3 border-bottom">
+                                <h6>${item.eventName}</h6>
+                                <div class="text-muted small">
+                                    <div>Ticket Type: ${item.ticketName}</div>
+                                    <div>Quantity: ${item.quantity}</div>
+                                    <div>Price: €${item.fullTicketPrice.toFixed(2)} each</div>
+                                </div>
                             </div>
-                        </div>
-                    `;
-                    container.insertAdjacentHTML('beforeend', itemHTML);
-                });
+                        `;
+                        container.insertAdjacentHTML('beforeend', itemHTML);
+                    });
+                }
 
                 new bootstrap.Modal(document.getElementById('orderDetailsModal')).show();
             });

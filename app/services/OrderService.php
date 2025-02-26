@@ -37,8 +37,15 @@ class OrderService
 
     public function getOrderHistory(int $customerId): array
     {
-        return $this->orderRepository->getOrderHistory($customerId);
+        $orders = $this->orderRepository->getOrderHistory($customerId);
+        
+        if (empty($orders)) {
+            throw new Exception("No orders found for customer ID: {$customerId}");
+        }
+        
+        return $orders;
     }
+    
 
     private function filterData(&$str)
     {
